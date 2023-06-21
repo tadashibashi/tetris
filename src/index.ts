@@ -39,10 +39,10 @@ Object.keys(Pieces).forEach(key => {
 Object.freeze(Pieces);
 Object.seal(Pieces);
 
-let grid: number[][] = []; // contains Pieces.<key>.id
+let grid: Uint8Array = new Uint8Array(FIELD_HEIGHT * FIELD_WIDTH); // contains Pieces.<key>.id
 let score: number = 0;
 
-let stepSpeed = 1000; // each step takes this amt of ms
+let stepSpeed = 37; // each step takes this amt of ms
 let isRunning = true;
 
 window.onload = () => {
@@ -51,10 +51,8 @@ window.onload = () => {
     pointsEl = document.getElementById("points");
 
     for (let row = 0; row < FIELD_HEIGHT; ++row) {
-        grid.push([]);
-
         for (let col = 0; col < FIELD_WIDTH; ++col) {
-            grid[row].push(Math.floor(Math.random() * 8));
+            grid[row * FIELD_WIDTH + col] = Math.floor(Math.random() * 8);
 
             const newDiv = document.createElement("div");
             newDiv.id = "r" + row + "c" + col;
@@ -69,6 +67,12 @@ window.onload = () => {
     function update() {
         ++score;
 
+        for (let row = 0; row < FIELD_HEIGHT; ++row) {
+            for (let col = 0; col < FIELD_WIDTH; ++col) {
+                grid[row * FIELD_WIDTH + col] = Math.floor(Math.random() * 8);
+            }
+        }
+
         render();
         if (isRunning)
             setTimeout(update, stepSpeed);
@@ -78,9 +82,10 @@ window.onload = () => {
         pointsEl.innerText = score.toString();
         const tiles = gridEl.children as HTMLCollectionOf<HTMLDivElement>;
 
-        for (let row = 0; row < grid.length; ++row) {
-            for (let col = 0; col < grid[0].length; ++col) {
-                tiles[row * grid[0].length + col].style.background = Pieces[grid[row][col]].color;
+        for (let row = 0; row < FIELD_HEIGHT; ++row) {
+            for (let col = 0; col < FIELD_WIDTH; ++col) {
+                const idx = row * FIELD_WIDTH + col;
+                tiles[idx].style.background = Pieces[grid[idx]].color;
             }
         }
     }

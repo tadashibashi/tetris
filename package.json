@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode=production --node-env=production",
+    "build": "sass styles/:dist/css/ & webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "watch": "concurrently 'sass -w styles/:dist/css/' 'webpack --watch'",
+    "serve": "concurrently 'sass -w styles/:dist/css/' 'webpack serve'"
   },
   "repository": {
     "type": "git",
