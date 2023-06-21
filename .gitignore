@@ -1,0 +1,12 @@
+# IDE
+.idea/
+.vs/
+.vscode/
+
+# OS-generated
+.DS_Store
+
+# Build, intermediate files, libraries, etc.
+build/
+dist/main.js
+node_modules/
