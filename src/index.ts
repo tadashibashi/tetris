@@ -1,4 +1,5 @@
 import * as Audio from "WebAA";
+import { Grid } from "./Grid";
 
 const audio = new Audio.AudioEngine;
 let tetrisEl: HTMLElement;
@@ -39,7 +40,7 @@ Object.keys(Pieces).forEach(key => {
 Object.freeze(Pieces);
 Object.seal(Pieces);
 
-let grid: Uint8Array = new Uint8Array(FIELD_HEIGHT * FIELD_WIDTH); // contains Pieces.<key>.id
+let grid = new Grid(FIELD_WIDTH, FIELD_HEIGHT);
 let score: number = 0;
 
 let stepSpeed = 37; // each step takes this amt of ms
@@ -52,13 +53,15 @@ window.onload = () => {
 
     for (let row = 0; row < FIELD_HEIGHT; ++row) {
         for (let col = 0; col < FIELD_WIDTH; ++col) {
-            grid[row * FIELD_WIDTH + col] = Math.floor(Math.random() * 8);
+            grid.set(row, col, Math.floor(Math.random() * 8));
 
             const newDiv = document.createElement("div");
             newDiv.id = "r" + row + "c" + col;
             gridEl.appendChild(newDiv);
         }
     }
+
+
 
     // first render
     render();
@@ -69,7 +72,7 @@ window.onload = () => {
 
         for (let row = 0; row < FIELD_HEIGHT; ++row) {
             for (let col = 0; col < FIELD_WIDTH; ++col) {
-                grid[row * FIELD_WIDTH + col] = Math.floor(Math.random() * 8);
+                grid.set(row, col, Math.floor(Math.random() * 8));
             }
         }
 
@@ -85,7 +88,7 @@ window.onload = () => {
         for (let row = 0; row < FIELD_HEIGHT; ++row) {
             for (let col = 0; col < FIELD_WIDTH; ++col) {
                 const idx = row * FIELD_WIDTH + col;
-                tiles[idx].style.background = Pieces[grid[idx]].color;
+                tiles[idx].style.background = Pieces[grid.get(row, col)].color;
             }
         }
     }
