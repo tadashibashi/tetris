@@ -9,6 +9,8 @@ test("Grid get angle 0", () => {
         2, 0, 0, 1,
     ]));
 
+
+
     const rotated = grid.createRotated(0);
     expect(rotated.grid).toEqual(new Uint8Array([
         4, 0, 1, 0,

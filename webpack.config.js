@@ -49,9 +49,6 @@ const config = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
-        alias: {
-            WebAA: path.resolve(__dirname, "lib/WebAA/"),
-        },
     },
 };
 

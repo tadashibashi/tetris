@@ -7,6 +7,10 @@ test("empty Grid", () => {
     expect(!grid.intersects(other, 0, 0, 0));
 });
 
+test("hello", () => {
+
+});
+
 test("empty other Grid", () => {
     const grid = new Grid(2, 2, [1, 2, 3, 4]);
     const other = new Grid(2, 2, [0, 0, 0, 0]);
