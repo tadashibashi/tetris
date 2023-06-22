@@ -7,15 +7,39 @@ export class Grid {
     /**
      * @param rows  - number of rows
      * @param cols  - number of cols
-     * @param arr   - if provided, it will set the internal grid to this array.
-     * Please ensure that width * height === arr.length
+     * @param arr   - if provided, it will be copied into the internal grid.
+     * (Ownership of ArrayLike maintained by user). Please ensure that
+     * `width * height === arr.length`
      */
-    constructor(rows: number, cols: number, arr?: Uint8Array) {
-        this.grid = arr ? arr : new Uint8Array(rows * cols);
+    constructor(rows: number, cols: number, arr?: ArrayLike<number>) {
+        this.grid = arr ? new Uint8Array(arr) : new Uint8Array(rows * cols);
         this.rowCount = rows;
         this.colCount = cols;
 
         if (arr) console.assert(arr.length === rows * cols);
+    }
+
+    /**
+     * Merge another Grid into this one if it contains non 0 values.
+     * It will overwrite anything at the location.
+     * @param startRow   - row in this Grid at which to perform the merge
+     * @param startCol   - column in this Grid at which to perform the merge
+     * @param other      - the other Grid that will merge into this one.
+     * @param otherAngle - the angle at which to transform the other Grid while performing the merge.
+     * Default: 0 (no transformation).
+     */
+    mergeInto(startRow: number, startCol: number, other: Grid, otherAngle: number = 0) {
+        const rowCount = (otherAngle % 2 === 0) ? other.rowCount : other.colCount;
+        const colCount = (otherAngle % 2 === 0) ? other.colCount : other.rowCount;
+
+        for (let row = 0; row < rowCount; ++row) {
+            for (let col = 0; col < colCount; ++col) {
+                const otherVal = other.get(row, col, otherAngle);
+                if (otherVal !== 0) {
+                    this.set(row + startRow, col + startCol, otherVal);
+                }
+            }
+        }
     }
 
     /**
@@ -49,7 +73,16 @@ export class Grid {
         return false;
     }
 
+    /**
+     * Creates a new Grid object that will be rotated
+     * @param angle
+     */
     createRotated(angle: 0 | 1 | 2 | 3): Grid {
+        if (angle === 0) {
+            return new Grid(this.rowCount, this.colCount,
+                new Uint8Array(this.grid));
+        }
+
         const arr = new Uint8Array(this.rowCount * this.colCount);
         const rowCount = (angle % 2 === 0) ? this.rowCount : this.colCount;
         const colCount = (angle % 2 === 0) ? this.colCount : this.rowCount;
