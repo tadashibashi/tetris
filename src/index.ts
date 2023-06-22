@@ -1,4 +1,4 @@
-import * as Audio from "WebAA";
+import * as Audio from "./WebAA";
 import { Grid } from "./Grid";
 
 const audio = new Audio.AudioEngine;
