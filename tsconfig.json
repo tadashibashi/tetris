@@ -6,7 +6,10 @@
     "target": "es5",
     "allowJs": true,
     "moduleResolution": "NodeNext",
-    "baseUrl": ".", // This must be specified if "paths" is.
+    "lib": [
+      "ES2016",
+      "dom"
+    ]
   },
-  "include": ["src/**/*.ts", "lib/**/*.ts"],
+  "include": ["src/**/*.ts"],
 }

@@ -26,9 +26,12 @@ p {
     aspect-ratio: 1 / 2;
 
     user-select: none;
+    border: 1px solid gray;
+    border-radius: 2px;
 
     > div {
-        border: 1px solid black;
+        border: 1px solid #88888840;
+        border-radius: 2px;
         &:hover {
             border: 2px solid white;
         }
