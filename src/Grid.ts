@@ -42,6 +42,92 @@ export class Grid {
         }
     }
 
+
+    /**
+     * Returns the left-most column where there is a non-zero value in this grid
+     * @param angle - the angle at which to project the grid. (angle * 90deg clockwise)
+     * @returns right-most row, starting from the 0, which represents the left-most row.
+     * If there is no non-zero value in the grid, -1 is returned.
+     */
+    leftMost(angle: number = 0): number {
+        const rowCount = (angle % 2 === 0) ? this.rowCount : this.colCount;
+        const colCount = (angle % 2 === 0) ? this.colCount : this.rowCount;
+
+        for (let col = 0; col < colCount; ++col) {
+            for (let row = 0; row < rowCount; ++row) {
+                if (this.get(row, col, angle))
+                    return col;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns the right-most column where there is a non-zero value in this grid
+     * @param angle - the angle at which to project the grid. (angle * 90deg clockwise)
+     * @returns right-most row, starting from the 0, which represents the left-most row.
+     * If there is no non-zero value in the grid, -1 is returned.
+     */
+    rightMost(angle: number = 0): number {
+        const rowCount = (angle % 2 === 0) ? this.rowCount : this.colCount;
+        const colCount = (angle % 2 === 0) ? this.colCount : this.rowCount;
+
+        for (let col = colCount-1; col >= 0; --col) {
+            for (let row = 0; row < rowCount; ++row) {
+                if (this.get(row, col, angle))
+                    return col;
+            }
+        }
+
+        return -1;
+    }
+
+
+    /**
+     * Returns the top-most row where there is a non-zero value in this grid
+     * @param angle - the angle at which to project the grid. (angle * 90deg clockwise)
+     * @returns top-most row, starting from 0, which represents the top row.
+     * If there is no non-zero value in the grid, rowCount-1 is returned.
+     */
+    topMost(angle: number = 0): number {
+        const rowCount = (angle % 2 === 0) ? this.rowCount : this.colCount;
+        const colCount = (angle % 2 === 0) ? this.colCount : this.rowCount;
+
+        for (let row = 0; row < rowCount; ++row) {
+            for (let col = 0; col < colCount; ++col) {
+                if (this.get(row, col, angle)) {
+                    return row;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns the top-most row where there is a non-zero value in this grid
+     * @param angle - the angle at which to project the grid. (angle * 90deg clockwise)
+     * @returns top-most row, starting from 0, which represents the top row.
+     * If there is no non-zero value in the grid, rowCount-1 is returned.
+     */
+    bottomMost(angle: number = 0): number {
+        const rowCount = (angle % 2 === 0) ? this.rowCount : this.colCount;
+        const colCount = (angle % 2 === 0) ? this.colCount : this.rowCount;
+
+        for (let row = rowCount-1; row >= 0; --row) {
+            for (let col = 0; col < colCount; ++col) {
+                if (this.get(row, col, angle)) {
+                    return row;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+
+
     /**
      * @param other       - other grid
      * @param startRow    - row from which to start checking at in other Grid
@@ -58,10 +144,14 @@ export class Grid {
         for (let row = 0; row < rowCount; ++row) {
             if (row + startRow >= other.rowCount)
                 break;
+            if ( row + startRow < 0)
+                continue;
 
             for (let col = 0; col < colCount; ++col) {
                 if (col + startColumn >= other.colCount)
                     break;
+                if (col + startColumn < 0)
+                    continue;
 
                 if (this.get(row, col, thisAngle) !== 0 &&
                     other.get(row + startRow, col + startColumn, otherAngle) !== 0) {
@@ -78,7 +168,7 @@ export class Grid {
      * @param angle
      */
     createRotated(angle: 0 | 1 | 2 | 3): Grid {
-        if (angle === 0) {
+        if (angle === 0) {  // just copy grid if no transformation
             return new Grid(this.rowCount, this.colCount,
                 new Uint8Array(this.grid));
         }
@@ -118,12 +208,12 @@ export class Grid {
         return this;
     }
 
-    isFree(row: number, col: number): boolean {
+    isFreeAt(row: number, col: number): boolean {
         return this.get(row, col) === 0;
     }
 
     private gridToIndex(row: number, col: number): number {
-        return this.clampIndex(row * this.rowCount + col);
+        return this.clampIndex(row * this.colCount + col);
     }
 
     private clampIndex(value: number): number {
