@@ -1,7 +1,7 @@
 import '../styles/styles.scss';
 import * as Audio from "./WebAA";
 import { Grid } from "./Grid";
-import { Pieces } from "./Pieces"
+import { PieceData } from "./PieceData"
 import {Actor} from "./Actor";
 
 const audio = new Audio.AudioEngine;
@@ -51,30 +51,27 @@ window.onload = () => {
     });
 
     document.addEventListener("keydown", evt => {
+        evt.preventDefault(); // prevent browser from using keydowns for shortcuts
 
-        // TODO: Actor.move function to check for collisions
         if (evt.code === "ArrowLeft") {
-            player.col -= 1;
+            player.move(0, -1);
         }
         if (evt.code === "ArrowRight") {
-            player.col += 1;
+            player.move(0, 1);
         }
         if (evt.code === "ArrowDown") {
-            player.row += 1;
-            player.counter = player.speed;
+            player.move(1, 0);
+            player.counter = player.speed; // reset auto-drop counter
         }
 
         if (evt.repeat) {
 
         } else {
             if (evt.code === "KeyX") {
-                ++player.angle;
-                player.angle %= 4;
+                player.rotate(player.angle + 1);
             }
             if (evt.code === "KeyZ") {
-                --player.angle;
-                if (player.angle < 0)
-                    player.angle += 4;
+                player.rotate(player.angle - 1);
             }
 
 
@@ -111,7 +108,7 @@ window.onload = () => {
         for (let row = 0; row < FIELD_HEIGHT; ++row) {
             for (let col = 0; col < FIELD_WIDTH; ++col) {
                 const idx = row * FIELD_WIDTH + col;
-                tiles[idx].style.background = Pieces[grid.get(row, col)].color;
+                tiles[idx].style.background = PieceData[grid.get(row, col)].color;
             }
         }
 

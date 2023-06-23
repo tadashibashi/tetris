@@ -1,8 +1,16 @@
-
+/**
+ * Represents 2D rectangular grid that is fill-able with numeric data (uint8)
+ *
+ * Uses typed array for rapid access of contiguous data
+ */
 export class Grid {
+    // the row count at angle 0
     readonly rowCount: number;
+    // the col count at angle 0
     readonly colCount: number;
-    grid: Uint8Array;
+
+    // inner grid array, representing 2D rectangular grid
+    grid: Uint32Array;
 
     /**
      * @param rows  - number of rows
@@ -12,11 +20,29 @@ export class Grid {
      * `width * height === arr.length`
      */
     constructor(rows: number, cols: number, arr?: ArrayLike<number>) {
-        this.grid = arr ? new Uint8Array(arr) : new Uint8Array(rows * cols);
+        this.grid = arr ? new Uint32Array(arr) : new Uint32Array(rows * cols);
         this.rowCount = rows;
         this.colCount = cols;
 
         if (arr) console.assert(arr.length === rows * cols);
+    }
+
+    /**
+     * *Gets the grid's width at the projected angle*
+     * @param angle - the angle at which to project the grid when calculating width.
+     * Angle is calculated as so: `angle * 90deg clockwise`. Default=`0`.
+     */
+    getWidth(angle: number = 0) {
+        return (angle % 2 === 0) ? this.colCount : this.rowCount;
+    }
+
+    /**
+     * *Gets the grid's height at the projected angle*
+     * @param angle - the angle at which to project the grid when calculating width.
+     * Angle is calculated as so: `angle * 90deg clockwise`. Default=`0`.
+     */
+    getHeight(angle: number = 0) {
+        return (angle % 2 === 0) ? this.rowCount : this.colCount;
     }
 
     /**
@@ -29,8 +55,8 @@ export class Grid {
      * Default: 0 (no transformation).
      */
     mergeInto(startRow: number, startCol: number, other: Grid, otherAngle: number = 0) {
-        const rowCount = (otherAngle % 2 === 0) ? other.rowCount : other.colCount;
-        const colCount = (otherAngle % 2 === 0) ? other.colCount : other.rowCount;
+        const rowCount = other.getHeight(otherAngle);
+        const colCount = other.getWidth(otherAngle);
 
         for (let row = 0; row < rowCount; ++row) {
             for (let col = 0; col < colCount; ++col) {
@@ -170,10 +196,10 @@ export class Grid {
     createRotated(angle: 0 | 1 | 2 | 3): Grid {
         if (angle === 0) {  // just copy grid if no transformation
             return new Grid(this.rowCount, this.colCount,
-                new Uint8Array(this.grid));
+                this.grid);
         }
 
-        const arr = new Uint8Array(this.rowCount * this.colCount);
+        const arr = new Array<number>(this.rowCount * this.colCount);
         const rowCount = (angle % 2 === 0) ? this.rowCount : this.colCount;
         const colCount = (angle % 2 === 0) ? this.colCount : this.rowCount;
 

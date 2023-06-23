@@ -1,19 +1,20 @@
 import {Grid} from "./Grid";
+import {randInt} from "./Util";
 
 type PieceInfo = {color: string, id: number, piece: Grid};
 interface PieceDatabase {
-    [key: string]: PieceInfo,
-    None: PieceInfo,
-    Stick: PieceInfo,
-    L: PieceInfo,
-    RevL: PieceInfo,
-    StepR: PieceInfo,
-    StepL: PieceInfo,
-    FourProng: PieceInfo,
-    Box: PieceInfo
+    [key: string]: PieceInfo;
+    None: PieceInfo;
+    Stick: PieceInfo;
+    L: PieceInfo;
+    RevL: PieceInfo;
+    StepR: PieceInfo;
+    StepL: PieceInfo;
+    FourProng: PieceInfo;
+    Box: PieceInfo;
 }
 
-const Pieces: PieceDatabase = {
+const PieceData: PieceDatabase = {
     None:  { color: "#ffffff00", id: 0, piece: null },
     Stick: { color: "skyblue", id: 1, piece: new Grid(4, 4,[
             0, 0, 1, 0,
@@ -49,15 +50,20 @@ const Pieces: PieceDatabase = {
     Box: {color: "gray", id: 7, piece: new Grid(2, 2, [
             7, 7,
             7, 7,
-        ])},
+        ])}
 };
 
+const PiecesCount = 7;
+
+function getRandPiece(): Grid {
+    return PieceData[randInt(PiecesCount) + 1].piece; // + 1 to omit null piece
+}
 
 // Make Pieces accessible via id as well as name.
-Object.keys(Pieces).forEach(key => {
-    Pieces[Pieces[key].id] = Pieces[key];
+Object.keys(PieceData).forEach(key => {
+    PieceData[PieceData[key].id] = PieceData[key];
 });
-Object.freeze(Pieces);
-Object.seal(Pieces);
+Object.freeze(PieceData);
+Object.seal(PieceData);
 
-export { Pieces };
+export { PieceData, getRandPiece };
