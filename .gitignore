@@ -9,7 +9,7 @@
 # Build, intermediate files, libraries, etc.
 build/
 dist/main.js
-dist/css
+dist/static/
 node_modules/
 
 # yarn
