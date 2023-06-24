@@ -2,8 +2,12 @@
     font-family: "Sabo";
     src: url('fonts/Sabo-Filled.otf') format("opentype");
 }
+@font-face {
+    font-family: "Space Mission";
+    src: url('fonts/SpaceMission.otf') format("opentype");
+}
 
-$main-font: Sabo, monospace;
+$main-font: "Space Mission", monospace;
 $main-background: #e5dff6;
 $title-font-size: 8vmin;
 
