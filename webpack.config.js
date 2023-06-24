@@ -36,8 +36,8 @@ const config = {
                 exclude: ['/node_modules/'],
             },
             {
-                test: /\.scss$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,

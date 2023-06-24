@@ -22,6 +22,7 @@ export class Actor {
     onPieceConnect: Delegate<[Actor]>;
     onLose: Delegate<[]>;
     onLineClear: Delegate<[number[]]>;
+    onReset: Delegate<[]>;
 
     constructor(grid: TetrisGrid, getNextPiece: () => Grid) {
         this.grid = grid;
@@ -32,7 +33,8 @@ export class Actor {
         this.onPieceConnect = new Delegate<[Actor]>;
         this.onLineClear = new Delegate<[number[]]>;
         this.onLose = new Delegate<[]>;
-        this.reset(getNextPiece());
+        this.onReset = new Delegate;
+        this.reset();
     }
 
     update(dt: number) {
@@ -79,7 +81,7 @@ export class Actor {
 
         this.onPieceConnect.invoke(this);
 
-        this.reset(this.getNextPiece());
+        this.reset();
     }
 
     /**
@@ -182,14 +184,24 @@ export class Actor {
 
 
 
-    reset(nextPiece: Grid) {
-        this.row = -nextPiece.bottomMost() - 1;
+    reset(nextPiece?: Grid) {
+        if (!nextPiece)
+            nextPiece = this.getNextPiece();
+        let row = -nextPiece.topMost();
+        let col = Math.round((this.grid.colCount - nextPiece.colCount) / 2);
+        while(nextPiece.intersects(this.grid, row, col))
+            --row;
+
+        this.row = row;
+        this.col = col;
 
         this.angle = 0;
         this.counter = this.speed;
         this.piece = nextPiece;
 
-        this.col = Math.round((this.grid.colCount - nextPiece.colCount) / 2);
+
+
+        this.onReset.invoke();
     }
 
     rotate(angle: number) {
@@ -240,6 +252,10 @@ export class Actor {
     }
 
     render(tiles: HTMLCollectionOf<HTMLElement>) {
+        let shadowRow = 1;
+        while (!this.piece.intersects(this.grid, this.row + shadowRow, this.col, this.angle) && !this.outboundsDown(shadowRow, this.angle))
+            ++shadowRow;
+        --shadowRow;
         for (let row = 0; row < this.piece.rowCount; ++row) {
             if (row + this.row >= this.grid.rowCount || row + this.row < 0) continue;
 
@@ -251,7 +267,14 @@ export class Actor {
                     const tileIdx = (row + this.row) * this.grid.colCount + col + this.col;
                     const tile = tiles[tileIdx];
                     tile.style.background = PieceData[pieceIdx].color;
-                    tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)"
+                    tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)";
+                    tile.style.opacity = "1";
+
+                    if (shadowRow !== 0) {
+                        const shadowTile = tiles[(row + this.row + shadowRow) * this.grid.colCount + col + this.col];
+                        shadowTile.style.background = PieceData[pieceIdx].color;
+                        shadowTile.style.opacity = ".4";
+                    }
                 }
             }
         }

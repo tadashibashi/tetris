@@ -28,6 +28,14 @@ export class Grid {
     }
 
     /**
+     * Set all spaces to 0
+     */
+    reset() {
+        for (let i = 0; i < this.grid.length; ++i)
+            this.grid[i] = 0;
+    }
+
+    /**
      * *Gets the grid's width at the projected angle*
      * @param angle - the angle at which to project the grid when calculating width.
      * Angle is calculated as so: `angle * 90deg clockwise`. Default=`0`.

@@ -1,0 +1,186 @@
+/* ===== Fonts =============================================================== */
+
+@font-face {
+    font-family: "Sabo";
+    src: url('fonts/Sabo-Filled.otf') format("opentype");
+}
+@font-face {
+    font-family: "Space Mission";
+    src: url('fonts/SpaceMission.otf') format("opentype");
+}
+
+/* ===== Global Macros ====================================================== */
+
+:root {
+    --main-font: "Space Mission", monospace;
+    --sub-font: "Sabo", monospace;
+    --main-background: #e5dff6;
+    --title-font-size: 8vmin;
+
+    --display-font-size: 2vmin;
+
+    --tile-border-size: .5vmin;
+    --tile-border-light: rgba(255, 255, 255, 0.25);
+    --tile-border-dark: rgba(101, 101, 101, 0.28);
+
+    --shadow-color: rgba(0, 0, 0, .1);
+    --shadow-color-light: rgba(0, 0, 0, .05);
+    --box-shadow: -1vmin 1vmin 1vmin 1vmin var(--shadow-color);
+    --text-shadow: -2vmin 2vmin var(--shadow-color-light);
+
+    --block-color-1: #6cbde0;           /* | */
+    --block-color-2: rgb(255, 151, 28); /* L */
+    --block-color-3: rgb(54, 74, 218);  /* rev-L */
+    --block-color-4: rgb(242, 46, 37);  /* step-r */
+    --block-color-5: rgb(57, 204, 23); /* step-l */
+    --block-color-6: #8a3cd9;     /* T */
+    --block-color-7: #f3d32b;
+}
+
+/* ===== Styles ============================================================ */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--main-font);
+    background: var(--main-background);
+}
+
+h1 {
+    font-size: var(--title-font-size);
+    text-align: center;
+    margin-top: 4vmin;
+    text-shadow: var(--text-shadow)
+}
+
+p {
+    text-align: center;
+    font-size: 3vmin;
+}
+
+#tetris {
+    width: 80vmin;
+    height: 100vh;
+    display: flex;
+    margin: auto;
+    grid-template-areas:
+        "held board next-up";
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 5fr 1fr;
+    column-gap: 3vmin;
+    row-gap: 4vmin;
+}
+
+.container {
+    padding: 1vmin;
+    width: 4vmin;
+}
+
+#grid {
+    background: repeating-linear-gradient(
+        45deg,
+        #fefefe,
+        #fefefe 2px,
+        #eee 2px,
+        #eee 4px
+    );
+    grid-area: board;
+    margin: 0 auto;
+
+    font-size: var(--display-font-size);
+
+    display: grid;
+    grid-template-rows: repeat(20, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+
+    height: 80vmin;
+    aspect-ratio: 1 / 2;
+
+    user-select: none;
+    border: 2px solid lightgray;
+    border-radius: 2px;
+
+    box-shadow: var(--box-shadow);
+}
+
+#grid > div {
+    border-top: var(--tile-border-size) solid var(--tile-border-light);
+    border-left: var(--tile-border-size) solid var(--tile-border-light);
+    border-right: var(--tile-border-size) solid var(--tile-border-dark);
+    border-bottom: var(--tile-border-size) solid var(--tile-border-dark);
+
+    border-radius: 2px;
+    opacity: 1;
+}
+
+#holding {
+    grid-area: held;
+    width: 100%;
+}
+
+#next-up {
+    grid-area: next-up;
+    width: 100%;
+}
+
+.container p {
+    font-size: var(--display-font-size);
+}
+
+.piece-grid {
+    width: 100%;
+    aspect-ratio: 1/1;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+
+    border: 1px solid gray;
+    border-radius: 2px;
+}
+
+.piece-grid div {
+    border: 1px dashed rgba(211, 211, 211, 0.47);
+}
+
+
+/* ===== Animations ======================================================== */
+
+@keyframes small-grow {
+    0% {
+        transform: scale(1);
+    }
+    10% {
+        transform: scale(.9);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.small-grow {
+    animation: small-grow .25s ease;
+}
+
+@keyframes row-clear {
+    0% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scaleY(1.5);
+        opacity: .5;
+    }
+    100% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+}
+
+.row-clear {
+    animation: row-clear .4s ease;
+}

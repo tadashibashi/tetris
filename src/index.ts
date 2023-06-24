@@ -1,4 +1,4 @@
-import '../styles/styles.scss'; // include scss in build
+import '../styles/styles.css'; // include scss in build
 
 
 import { Tetris } from "./Tetris"

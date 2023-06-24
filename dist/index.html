@@ -19,22 +19,26 @@
 
         <!-- Main game block -->
         <section id="tetris">
-
+            <section id="holding" class="container">
+                <div id="holding-grid" class="piece-grid"></div>
+                <p>Holding</p>
+            </section>
             <!-- Tile square display -->
             <section id="grid"></section>
 
-            <section id="game-info">
-                <section id="next-up">
-                    <div id="next-up-grid"></div>
-                    <p>Next Up</p>
+
+            <section id="next-up" class="container">
+                <div id="next-up-grid" class="piece-grid"></div>
+                <p>Next Up</p>
+
+                <section id="score-display">
+                    <p>Score: <span id="points"></span></p>
+                    <p>Level: <span id="level"></span></p>
                 </section>
-                <section id="holding">
-                    <div id="holding-grid"></div>
-                    <p>Holding</p>
-                </section>
-                <p>Score: <span id="points"></span></p>
-                <p>Level: <span id="level"></span></p>
             </section>
+
+
+
 
 
         </section>

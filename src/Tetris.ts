@@ -9,6 +9,7 @@ let gridEl: HTMLElement;
 let pointsEl: HTMLElement;
 let levelEl: HTMLElement;
 let nextUpGridEl: HTMLElement;
+let heldGridEl: HTMLElement;
 
 const FIELD_WIDTH = 10;
 const FIELD_HEIGHT = 20;
@@ -26,9 +27,12 @@ export class Tetris extends Game {
 
     nextPiece: Grid;
     storedPiece: Grid = null;
+    lastSwapped: Grid = null;
 
     score: number;
     level: number;
+
+    gameover: boolean; // TODO: use state var
 
     getNextPiece(): Grid {
         const sendThis = this.nextPiece;
@@ -45,6 +49,7 @@ export class Tetris extends Game {
         pointsEl = document.getElementById("points");
         levelEl = document.getElementById("level");
         nextUpGridEl = document.getElementById("next-up-grid");
+        heldGridEl = document.getElementById("holding-grid");
         this.getNextPiece = this.getNextPiece.bind(this);
 
         this.nextPiece = getRandPiece();
@@ -60,8 +65,9 @@ export class Tetris extends Game {
             }
         }
 
-        for (let row = 0; row < 4; ++row) {
+        for (let row = 0; row < 25; ++row) {
             nextUpGridEl.appendChild(document.createElement("div"));
+            heldGridEl.appendChild(document.createElement("div"));
         }
 
         // attach dom event listeners
@@ -72,14 +78,18 @@ export class Tetris extends Game {
                 target.classList.remove(evt.animationName);
         });
 
-        // test draw blocks
-        gridEl.addEventListener("click", evt => {
-            const target = evt.target as HTMLElement;
-
-            const pos = getPosFromId(target.id);
-            if (pos.row !== -1)
-                grid.set(pos.row, pos.col, 2);
+        heldGridEl.addEventListener("click", evt => {
+            this.swapPiece();
         });
+
+        // test draw blocks
+        // gridEl.addEventListener("click", evt => {
+        //     const target = evt.target as HTMLElement;
+        //
+        //     const pos = getPosFromId(target.id);
+        //     if (pos.row !== -1)
+        //         grid.set(pos.row, pos.col, 2);
+        // });
 
 
         // create game objects
@@ -93,7 +103,15 @@ export class Tetris extends Game {
                 tile.classList.remove("small-grow");
                 tile.classList.add("small-grow");
             });
+
+            if (this.lastSwapped)
+                this.lastSwapped = null;
         });
+
+        player.onReset.addListener(() => {
+            this.drawNextPiece();
+        });
+
 
         player.onLineClear.addListener(lines => {
             if (lines.length === 4) {
@@ -107,6 +125,10 @@ export class Tetris extends Game {
             }
         });
 
+        player.onLose.addListener(() => {
+            this.gameover = true;
+        });
+
         grid.onAnimEnd.addListener(animName => {
             if (animName === "line-clear") {
                 this.render();
@@ -117,41 +139,92 @@ export class Tetris extends Game {
 
         this.player = player;
         this.grid = grid;
+
+        this.reset();
+        return true;
+    }
+
+    private drawPiece(piece: Grid, gridEl: HTMLElement) {
+        if (!piece) return;
+
+        const els = gridEl.children as HTMLCollectionOf<HTMLElement>;
+
+        for (let i = 0; i < 25; ++i)
+            els[i].style.background = "";
+
+        for (let row = 0; row < piece.getHeight(); ++row) {
+            for (let col = 0; col < piece.getWidth(); ++col) {
+                els[(row + 1) * 5 + col + 1].style.background = PieceData[piece.get(row, col)].color;
+            }
+        }
+    }
+    
+    private drawNextPiece() {
+        this.drawPiece(this.nextPiece, nextUpGridEl);
+    }
+    
+    private drawHeldPiece() {
+        this.drawPiece(this.storedPiece, heldGridEl);
+    }
+
+    reset() {
+        this.player.reset();
         this.score = 0;
         this.level = 1;
-        return true;
+        this.grid.reset();
+        this.gameover = false;
+        this.render();
     }
 
     protected update(deltaTime: number): void {
         const keys = this.keyboard;
         const player = this.player;
 
-        if (keys.justDown("KeyX")) {
-            player.rotate(player.angle + 1);
-        }
-        if (keys.justDown("KeyZ")) {
-            player.rotate(player.angle - 1);
-        }
-        if (keys.justDown("ArrowUp")) {
-            player.immediateDrop();
-        }
-
-        if (keys.isRepeating("ArrowLeft", 200, 100)) {
-            player.move(0, -1);
-        }
-        if (keys.isRepeating("ArrowRight", 200, 100)) {
-            player.move(0, 1);
-        }
-        if (keys.isRepeating("ArrowDown", 200, 100)) {
-            if (player.moveDownOne()) {
-                player.resetCounter();
-                ++this.score;
-            } else {
-                keys.resetRepeating("ArrowDown");
+        if (!this.gameover) {
+            if (keys.justDown("KeyX")) {
+                player.rotate(player.angle + 1);
             }
-        }
+            if (keys.justDown("KeyZ")) {
+                player.rotate(player.angle - 1);
+            }
+            if (keys.justDown("ArrowUp")) {
+                player.immediateDrop();
+            }
+            if (keys.justDown("KeyC")) {
+                this.swapPiece();
+            }
 
-        player.update(deltaTime);
+            if (keys.isRepeating("ArrowLeft", 200, 100)) {
+                player.move(0, -1);
+            }
+            if (keys.isRepeating("ArrowRight", 200, 100)) {
+                player.move(0, 1);
+            }
+            if (keys.isRepeating("ArrowDown", 200, 100)) {
+                if (player.moveDownOne()) {
+                    player.resetCounter();
+                    ++this.score;
+                    if (player.piece.intersects(this.grid, 1, 0, player.angle))
+                        keys.resetRepeating("ArrowDown");
+                } else {
+                    keys.resetRepeating("ArrowDown");
+                }
+            }
+
+            player.update(deltaTime);
+        }
+    }
+
+    swapPiece() {
+        if (this.lastSwapped !== this.player.piece) {
+            const tempPiece = this.storedPiece;
+
+            this.lastSwapped = this.storedPiece;
+            this.storedPiece = this.player.piece;
+
+            this.player.reset(tempPiece);
+            this.drawHeldPiece();
+        }
     }
 
     protected render(): void {
@@ -165,6 +238,7 @@ export class Tetris extends Game {
                 tiles[idx].style.background = gridVal === PiecesCount + 1 ? "rgba(0, 0, 0, 0.75)" : PieceData[gridVal].color;
                 tiles[idx].style.boxShadow = "";
                 tiles[idx].style.zIndex = "1";
+                tiles[idx].style.opacity = "1";
             }
         }
 
