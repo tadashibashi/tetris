@@ -15,20 +15,27 @@
     <body>
         <h1>Grid Tetris</h1>
 
+        <section id="pause-overlay"></section>
+
         <!-- Main game block -->
         <section id="tetris">
 
             <!-- Tile square display -->
             <section id="grid"></section>
 
-            <section id="next-up">
-                <div id="next-up-grid"></div>
-                <p>Next Up</p>
-            </section>
             <section id="game-info">
+                <section id="next-up">
+                    <div id="next-up-grid"></div>
+                    <p>Next Up</p>
+                </section>
+                <section id="holding">
+                    <div id="holding-grid"></div>
+                    <p>Next Up</p>
+                </section>
                 <p>Score: <span id="points"></span></p>
                 <p>Level: <span id="level"></span></p>
             </section>
+
 
         </section>
 
