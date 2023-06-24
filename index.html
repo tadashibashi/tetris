@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Tetris</title>
+
+        <!-- Google Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+        <!-- Stylesheet -->
+        <link rel="stylesheet" href="css/main.css" />
+    </head>
+    <body>
+        <h1>Grid Tetris</h1>
+
+        <section id="pause-overlay"></section>
+
+        <!-- Main game block -->
+        <section id="tetris">
+            <section id="holding" class="container">
+                <div id="holding-grid" class="piece-grid"></div>
+                <p>Holding</p>
+            </section>
+            <!-- Tile square display -->
+            <section id="grid"></section>
+
+
+            <section id="next-up" class="container">
+                <div id="next-up-grid" class="piece-grid"></div>
+                <p>Next Up</p>
+
+                <section id="score-display">
+                    <p>Score: <span id="points"></span></p>
+                    <p>Level: <span id="level"></span></p>
+                </section>
+            </section>
+
+
+
+
+
+        </section>
+
+        <script src="main.js"></script>
+    </body>
+    
+</html>
