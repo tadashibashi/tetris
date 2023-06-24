@@ -18,8 +18,9 @@ export class TetrisGrid extends Grid {
     loseAnim() {
         const tiles = document.getElementById("grid").children as HTMLCollectionOf<HTMLDivElement>;
         let idx = 0;
-        const interval = setInterval(() => {
-            if (detectBrowser(Browser.Safari)) {
+
+        if (detectBrowser(Browser.Safari)) {
+            const interval = setInterval(() => {
                 for (let col = 0; col < this.getWidth(); ++col)
                     this.grid[idx * this.getWidth() + col] = PiecesCount + 1;
                 ++idx;
@@ -27,7 +28,9 @@ export class TetrisGrid extends Grid {
                     clearInterval(interval);
                     this.onAnimEnd.invoke("lose");
                 }
-            } else {
+            }, 50);
+        } else {
+            const interval = setInterval(() => {
                 this.grid[idx] = PiecesCount + 1;
                 tiles[idx].classList.add("small-grow")
                 ++idx;
@@ -35,10 +38,8 @@ export class TetrisGrid extends Grid {
                     clearInterval(interval);
                     this.onAnimEnd.invoke("lose");
                 }
-            }
-
-
-        }, 16.67);
+            }, 16.67);
+        }
     }
 
     /**
@@ -82,7 +83,7 @@ export class TetrisGrid extends Grid {
 
 
             this.onAnimEnd.invoke("line-clear");
-        }, 250);
+        }, 300);
 
 
         return completeRows;

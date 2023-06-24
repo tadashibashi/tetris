@@ -50,13 +50,17 @@ body {
 h1 {
     font-size: var(--title-font-size);
     text-align: center;
-    margin-top: 4vmin;
+    margin: 2vmin 0;
     text-shadow: var(--text-shadow)
 }
 
 p {
-    text-align: center;
     font-size: 3vmin;
+    text-align: left;
+}
+
+.label {
+    text-align: center;
 }
 
 #tetris {

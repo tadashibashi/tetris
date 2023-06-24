@@ -19,6 +19,10 @@ export class Actor {
     startSpeed: number;
     maxSpeed: number;
 
+    pressure: number;
+    maxPressure: number;
+    underPressure: boolean;
+
     getNextPiece: () => Grid;
 
     onPieceConnect: Delegate<[Actor]>;
@@ -27,12 +31,16 @@ export class Actor {
     onReset: Delegate<[]>;
 
     constructor(grid: TetrisGrid, getNextPiece: () => Grid) {
-        this.startSpeed = 50;
+        this.startSpeed = 1000;
         this.maxSpeed = 50;
         this.grid = grid;
         this.speed = this.startSpeed;
         this.isPaused = false;
         this.getNextPiece = getNextPiece;
+
+        this.pressure = 0;
+        this.maxPressure = 200;
+        this.underPressure = false;
 
         this.onPieceConnect = new Delegate<[Actor]>;
         this.onLineClear = new Delegate<[number[]]>;
@@ -46,6 +54,14 @@ export class Actor {
 
         // countdown counter
         this.counter -= dt;
+
+        if (this.underPressure) {
+            this.pressure += dt;
+            if (this.pressure >= this.maxPressure) {
+                this.connectToBoard();
+            }
+        }
+
 
         if (this.counter <= 0) {
             this.counter += this.speed;
@@ -89,16 +105,18 @@ export class Actor {
     }
 
     /**
-     * Moves piece down one row in the grid. Returns false if move was prevented, and true if moved.
+     * Moves piece down one row in the grid. Returns false if move prevented, and true if moved.
      */
     moveDownOne() {
         if (this.piece.intersects(this.grid, this.row + 1, this.col, this.angle, 0) ||
             this.row + 1 > this.grid.getHeight() - 1 - this.piece.bottomMost(this.angle)) {
-            this.connectToBoard();
+            this.underPressure = true;
             return false;
         }
 
         this.move(1, 0);
+        this.pressure = 0;
+        this.underPressure = false;
         return true;
     }
 
@@ -199,6 +217,9 @@ export class Actor {
         this.row = row;
         this.col = col;
 
+        this.pressure = 0;
+        this.underPressure = false;
+
         this.angle = 0;
         this.speed = this.startSpeed;
         this.counter = this.speed;
@@ -262,24 +283,27 @@ export class Actor {
             ++shadowRow;
         --shadowRow;
         for (let row = 0; row < this.piece.rowCount; ++row) {
-            if (row + this.row >= this.grid.rowCount || row + this.row < 0) continue;
 
             for (let col = 0; col < this.piece.colCount; ++col) {
-                if (col + this.col >= this.grid.colCount || col + this.col < 0) continue;
 
                 const pieceIdx = this.piece.get(row, col, this.angle)
                 if (pieceIdx !== 0) {
+                    if (shadowRow !== 0) { // only need to draw ghost/shadow when not overlapped by player
+                        const shadowTile = tiles[(row + this.row + shadowRow) * this.grid.colCount + col + this.col];
+                        shadowTile.style.border = ".5vmin " + PieceData[pieceIdx].color + " dashed";
+                        shadowTile.style.opacity = ".6";
+                    }
+
+                    if (row + this.row >= this.grid.rowCount || row + this.row < 0) continue;
+                    if (col + this.col >= this.grid.colCount || col + this.col < 0) continue;
+
                     const tileIdx = (row + this.row) * this.grid.colCount + col + this.col;
                     const tile = tiles[tileIdx];
                     tile.style.background = PieceData[pieceIdx].color;
                     tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)";
                     tile.style.opacity = "1";
 
-                    if (shadowRow !== 0) { // only need to draw ghost/shadow when not overlapped by player
-                        const shadowTile = tiles[(row + this.row + shadowRow) * this.grid.colCount + col + this.col];
-                        shadowTile.style.border = ".5vmin " + PieceData[pieceIdx].color + " dashed";
-                        shadowTile.style.opacity = ".6";
-                    }
+
                 }
             }
         }

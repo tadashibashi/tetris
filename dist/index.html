@@ -6,6 +6,8 @@
 
         <!-- Stylesheet -->
         <link rel="stylesheet" href="css/main.css" />
+
+        <script src="https://kit.fontawesome.com/a8d80231ea.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <h1>Grid Tetris</h1>
@@ -16,7 +18,7 @@
         <section id="tetris">
             <section id="holding" class="container">
                 <div id="holding-grid" class="piece-grid"></div>
-                <p>Holding</p>
+                <p class="label">Holding</p>
             </section>
             <!-- Tile square display -->
             <section id="grid"></section>
@@ -24,7 +26,7 @@
 
             <section id="next-up" class="container">
                 <div id="next-up-grid" class="piece-grid"></div>
-                <p>Next Up</p>
+                <p class="label">Next Up</p>
 
                 <section id="score-display">
                     <p>Score: <span id="points"></span></p>
@@ -37,6 +39,8 @@
 
 
         </section>
+
+        <div></div>
 
         <script src="main.js"></script>
     </body>

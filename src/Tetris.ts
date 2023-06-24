@@ -28,11 +28,14 @@ export class Tetris extends Game {
     nextPiece: Grid;
     storedPiece: Grid = null;
     lastSwapped: Grid = null;
+    totalLines = 0;
 
     score: number;
     level: number;
 
-    gameover: boolean; // TODO: use state var
+    isPaused: boolean;
+
+    gameOver: boolean; // TODO: use state var
 
     getNextPiece(): Grid {
         const sendThis = this.nextPiece;
@@ -79,6 +82,8 @@ export class Tetris extends Game {
         });
 
         heldGridEl.addEventListener("click", evt => {
+            if (this.gameOver) return;
+
             this.swapPiece();
         });
 
@@ -123,10 +128,15 @@ export class Tetris extends Game {
             } else if (lines.length === 1) {
                 this.score += 100 * this.level;
             }
+
+            this.totalLines += lines.length;
+
+            this.level = Math.floor(this.totalLines / 5) + 1;
+            player.speed = Math.max(player.startSpeed - (this.level * 80), player.maxSpeed);
         });
 
         player.onLose.addListener(() => {
-            this.gameover = true;
+            this.gameOver = true;
         });
 
         grid.onAnimEnd.addListener(animName => {
@@ -134,8 +144,6 @@ export class Tetris extends Game {
                 this.render();
             }
         });
-
-
 
         this.player = player;
         this.grid = grid;
@@ -171,8 +179,10 @@ export class Tetris extends Game {
         this.player.reset();
         this.score = 0;
         this.level = 1;
+        this.totalLines = 0;
         this.grid.reset();
-        this.gameover = false;
+        this.gameOver = false;
+        this.isPaused = false;
         this.render();
     }
 
@@ -180,7 +190,7 @@ export class Tetris extends Game {
         const keys = this.keyboard;
         const player = this.player;
 
-        if (!this.gameover) {
+        if (!this.gameOver) {
             if (keys.justDown("KeyX")) {
                 player.rotate(player.angle + 1);
             }
