@@ -229,6 +229,7 @@ export class Tetris extends Game {
 
     protected render(): void {
         pointsEl.innerText = this.score.toString();
+        levelEl.innerText = this.level.toString();
         const tiles = gridEl.children as HTMLCollectionOf<HTMLElement>;
 
         for (let row = 0; row < FIELD_HEIGHT; ++row) {
@@ -239,6 +240,7 @@ export class Tetris extends Game {
                 tiles[idx].style.boxShadow = "";
                 tiles[idx].style.zIndex = "1";
                 tiles[idx].style.opacity = "1";
+                tiles[idx].style.border = "";
             }
         }
 

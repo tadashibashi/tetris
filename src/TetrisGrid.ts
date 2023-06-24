@@ -1,6 +1,7 @@
 import {Grid} from "./Grid";
 import {Delegate} from "./Delegate"
 import {PieceData, PiecesCount} from "./PieceData";
+import {Browser, detectBrowser} from "./Util";
 
 /**
  * Extension of the Grid class that contains Tetris-specific animations, edge case functions, etc.
@@ -18,13 +19,24 @@ export class TetrisGrid extends Grid {
         const tiles = document.getElementById("grid").children as HTMLCollectionOf<HTMLDivElement>;
         let idx = 0;
         const interval = setInterval(() => {
-            this.grid[idx] = PiecesCount + 1;
-            tiles[idx].classList.add("small-grow")
-            ++idx;
-            if (idx >= this.grid.length) {
-                clearInterval(interval);
-                this.onAnimEnd.invoke("lose");
+            if (detectBrowser(Browser.Safari)) {
+                for (let col = 0; col < this.getWidth(); ++col)
+                    this.grid[idx * this.getWidth() + col] = PiecesCount + 1;
+                ++idx;
+                if (idx >= this.getHeight()) {
+                    clearInterval(interval);
+                    this.onAnimEnd.invoke("lose");
+                }
+            } else {
+                this.grid[idx] = PiecesCount + 1;
+                tiles[idx].classList.add("small-grow")
+                ++idx;
+                if (idx >= this.grid.length) {
+                    clearInterval(interval);
+                    this.onAnimEnd.invoke("lose");
+                }
             }
+
 
         }, 16.67);
     }

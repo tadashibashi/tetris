@@ -16,6 +16,8 @@ export class Actor {
     counter: number;
     speed: number;
     isPaused: boolean;
+    startSpeed: number;
+    maxSpeed: number;
 
     getNextPiece: () => Grid;
 
@@ -25,8 +27,10 @@ export class Actor {
     onReset: Delegate<[]>;
 
     constructor(grid: TetrisGrid, getNextPiece: () => Grid) {
+        this.startSpeed = 50;
+        this.maxSpeed = 50;
         this.grid = grid;
-        this.speed = 1000;
+        this.speed = this.startSpeed;
         this.isPaused = false;
         this.getNextPiece = getNextPiece;
 
@@ -196,6 +200,7 @@ export class Actor {
         this.col = col;
 
         this.angle = 0;
+        this.speed = this.startSpeed;
         this.counter = this.speed;
         this.piece = nextPiece;
 
@@ -272,8 +277,8 @@ export class Actor {
 
                     if (shadowRow !== 0) { // only need to draw ghost/shadow when not overlapped by player
                         const shadowTile = tiles[(row + this.row + shadowRow) * this.grid.colCount + col + this.col];
-                        shadowTile.style.background = PieceData[pieceIdx].color;
-                        shadowTile.style.opacity = ".4";
+                        shadowTile.style.border = ".5vmin " + PieceData[pieceIdx].color + " dashed";
+                        shadowTile.style.opacity = ".6";
                     }
                 }
             }
