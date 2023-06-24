@@ -69,7 +69,6 @@ export class Actor {
             this.onLineClear.invoke(rowsCleared);
         }
 
-        console.log(this.row, -this.piece.topMost(this.angle))
         // Check for loss
         if (this.row < -this.piece.topMost(this.angle)) {
 
@@ -142,7 +141,6 @@ export class Actor {
             for (let pieceCol = 0; pieceCol < pieceWidth; ++pieceCol) {
                 const gridRow = pieceRow + this.row;
                 const gridCol = pieceCol + this.col;
-                console.log("gridRow:", gridRow, "gridCol:", gridCol);
 
                 if (gridCol >= gridWidth || gridCol < 0) continue;
                 if (gridRow >= gridHeight || gridRow < 0) continue;

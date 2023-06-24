@@ -3,7 +3,6 @@
  */
 export interface KeyState {
     code: string;
-    repeating: boolean;
     lastState: number;
     state: number;
 }
@@ -46,15 +45,21 @@ export class Keyboard {
         return this.getState(code).state > 0;
     }
 
-    timeDown(code: string) {
-        return this.getState(code).state;
+    resetRepeating(code: string) {
+        const key = this.getState(code);
+        if (key.state > 0) {
+            key.state = 0.001;
+        }
     }
 
     isRepeating(code: string, initDelay: number, interval: number) {
         const key = this.getState(code);
-        return ( (key.state && !key.lastState) ||
-             (key.state > initDelay &&
-            Math.floor(key.state/(interval/2)) % 2 === 0) );
+        if (key.state > initDelay + interval) {
+            key.state -= interval;
+            return true;
+        } else {
+            return (key.state && !key.lastState);
+        }
     }
 
     isUp(code: string) {
@@ -94,7 +99,6 @@ export class Keyboard {
 
             const newKeyState = {
                 code,
-                repeating: false,
                 lastState: 0,
                 state: 0,
             };

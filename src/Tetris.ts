@@ -89,7 +89,6 @@ export class Tetris extends Game {
         // attach listeners
         player.onPieceConnect.addListener(actor => {
             const tiles = actor.getTileEls();
-            console.log(tiles);
             tiles.forEach(tile => {
                 tile.classList.remove("small-grow");
                 tile.classList.add("small-grow");
@@ -137,16 +136,18 @@ export class Tetris extends Game {
             player.immediateDrop();
         }
 
-        if (keys.isRepeating("ArrowLeft", 500, 250)) {
+        if (keys.isRepeating("ArrowLeft", 200, 100)) {
             player.move(0, -1);
         }
-        if (keys.isRepeating("ArrowRight", 500, 250)) {
+        if (keys.isRepeating("ArrowRight", 200, 100)) {
             player.move(0, 1);
         }
-        if (keys.isRepeating("ArrowDown", 500, 250)) {
+        if (keys.isRepeating("ArrowDown", 200, 100)) {
             if (player.moveDownOne()) {
                 player.resetCounter();
                 ++this.score;
+            } else {
+                keys.resetRepeating("ArrowDown");
             }
         }
 
