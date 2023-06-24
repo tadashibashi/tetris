@@ -85,6 +85,7 @@ window.onload = () => {
 
             const newDiv = document.createElement("div");
             newDiv.id = "r" + row + "c" + col;
+            newDiv.style.zIndex = "" + row;
             gridEl.appendChild(newDiv);
         }
     }
@@ -169,7 +170,9 @@ window.onload = () => {
             for (let col = 0; col < FIELD_WIDTH; ++col) {
                 const idx = row * FIELD_WIDTH + col;
                 const gridVal = grid.get(row, col);
-                tiles[idx].style.background = gridVal === PiecesCount + 1 ? "black" : PieceData[gridVal].color;
+                tiles[idx].style.background = gridVal === PiecesCount + 1 ? "rgba(0, 0, 0, 0.75)" : PieceData[gridVal].color;
+                tiles[idx].style.boxShadow = "";
+                tiles[idx].style.zIndex = "1";
             }
         }
 

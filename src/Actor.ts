@@ -69,8 +69,10 @@ export class Actor {
             this.onLineClear.invoke(rowsCleared);
         }
 
+        console.log(this.row, -this.piece.topMost(this.angle))
         // Check for loss
-        if (this.row < this.piece.topMost()) {
+        if (this.row < -this.piece.topMost(this.angle)) {
+
             this.grid.loseAnim();
             this.isPaused = true;
             this.onLose.invoke();
@@ -186,7 +188,7 @@ export class Actor {
         this.row = -nextPiece.bottomMost() - 1;
 
         this.angle = 0;
-        this.counter = 0;
+        this.counter = this.speed;
         this.piece = nextPiece;
 
         this.col = Math.round((this.grid.colCount - nextPiece.colCount) / 2);
@@ -249,7 +251,9 @@ export class Actor {
                 const pieceIdx = this.piece.get(row, col, this.angle)
                 if (pieceIdx) {
                     const tileIdx = (row + this.row) * this.grid.colCount + col + this.col;
-                    tiles[tileIdx].style.background = PieceData[pieceIdx].color;
+                    const tile = tiles[tileIdx];
+                    tile.style.background = PieceData[pieceIdx].color;
+                    tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)"
                 }
             }
         }

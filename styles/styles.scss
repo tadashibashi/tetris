@@ -1,13 +1,32 @@
-$main-font: 'Press Start 2P', cursive;
+@font-face {
+    font-family: "Sabo";
+    src: url('fonts/Sabo-Filled.otf') format("opentype");
+}
+
+$main-font: Sabo, monospace;
+$main-background: #e5dff6;
+$title-font-size: 8vmin;
+
+$display-font-size: 4vmin;
+
+$tile-border-size: .5vmin;
+$tile-border-light: rgba(255, 255, 255, 0.25);
+$tile-border-dark: rgba(101, 101, 101, 0.28);
+
+$shadow-color: rgba(0, 0, 0, .1);
+$shadow-color-light: rgba(0, 0, 0, .05);
+$box-shadow: -1vmin 1vmin 1vmin 1vmin $shadow-color;
 
 body {
     font-family: $main-font;
+    background: $main-background;
 }
 
 h1 {
-    font-size: 4vmin;
+    font-size: $title-font-size;
     text-align: center;
-    margin-top: 8vmin;
+    margin-top: 4vmin;
+    text-shadow: -2vmin 2vmin $shadow-color-light;
 }
 
 p {
@@ -56,8 +75,14 @@ p {
     border: 2px solid lightgray;
     border-radius: 2px;
 
+    box-shadow: $box-shadow;
+
     > div {
-        border: 1px solid #88888840;
+        border-top: $tile-border-size solid $tile-border-light;
+        border-left: $tile-border-size solid $tile-border-light;
+        border-right: $tile-border-size solid $tile-border-dark;
+        border-bottom: $tile-border-size solid $tile-border-dark;
+        // border-left: 1px solid #88888840;
         border-radius: 2px;
         opacity: 1;
         &:hover {
@@ -73,7 +98,7 @@ p {
     padding: 1vmin;
 
     p {
-        font-size: 2vmin;
+        font-size: $display-font-size;
     }
 
 
@@ -92,6 +117,8 @@ p {
         font-size: 2vmin;
     }
 }
+
+// ===== Animations ===========================================================
 
 @keyframes small-grow {
     0% {
