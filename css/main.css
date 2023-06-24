@@ -2,11 +2,11 @@
 
 @font-face {
     font-family: "Sabo";
-    src: url(../../5a1d2c404899cb5d7661.otf) format("opentype");
+    src: url(dist/5a1d2c404899cb5d7661.otf) format("opentype");
 }
 @font-face {
     font-family: "Space Mission";
-    src: url(../../9f7052cf58f04a6694f8.otf) format("opentype");
+    src: url(dist/9f7052cf58f04a6694f8.otf) format("opentype");
 }
 
 /* ===== Global Macros ====================================================== */
