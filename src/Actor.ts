@@ -263,14 +263,14 @@ export class Actor {
                 if (col + this.col >= this.grid.colCount || col + this.col < 0) continue;
 
                 const pieceIdx = this.piece.get(row, col, this.angle)
-                if (pieceIdx) {
+                if (pieceIdx !== 0) {
                     const tileIdx = (row + this.row) * this.grid.colCount + col + this.col;
                     const tile = tiles[tileIdx];
                     tile.style.background = PieceData[pieceIdx].color;
                     tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)";
                     tile.style.opacity = "1";
 
-                    if (shadowRow !== 0) {
+                    if (shadowRow !== 0) { // only need to draw ghost/shadow when not overlapped by player
                         const shadowTile = tiles[(row + this.row + shadowRow) * this.grid.colCount + col + this.col];
                         shadowTile.style.background = PieceData[pieceIdx].color;
                         shadowTile.style.opacity = ".4";

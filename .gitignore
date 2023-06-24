@@ -9,7 +9,8 @@
 # Build, intermediate files, libraries, etc.
 build/
 dist/main.js
-dist/static/
+dist/css/
+dist/*.otf
 node_modules/
 
 # yarn
