@@ -15,30 +15,118 @@ p {
     font-size: 3vmin;
 }
 
+#tetris {
+    width: 60vmin;
+    height: 100vh;
+    display: grid;
+    margin: auto;
+    grid-template-areas:
+        "board next-up"
+        "board score"
+        "board none";
+    grid-template-rows: 4fr 2fr 2fr;
+    grid-template-columns: 5fr 1fr;
+    column-gap: 3vmin;
+    row-gap: 4vmin;
+
+    > p {
+        grid-area: score;
+    }
+}
+
 #grid {
+    background: repeating-linear-gradient(
+        45deg,
+        #fefefe,
+        #fefefe 2px,
+        #eee 2px,
+        #eee 4px
+    );
+    grid-area: board;
     margin: 0 auto;
 
     display: grid;
     grid-template-rows: repeat(20, 1fr);
     grid-template-columns: repeat(10, 1fr);
 
-    width: 40vmin;
+    width: 100%;
     aspect-ratio: 1 / 2;
 
     user-select: none;
-    border: 1px solid gray;
+    border: 2px solid lightgray;
     border-radius: 2px;
 
     > div {
         border: 1px solid #88888840;
         border-radius: 2px;
+        opacity: 1;
         &:hover {
             border: 2px solid white;
         }
     }
-
 }
 
-#grid > div {
+#next-up {
+    grid-area: next-up;
+    width: 10vmin;
+    height: 12vmin;
+    padding: 1vmin;
 
+    p {
+        font-size: 2vmin;
+    }
+
+
+    #next-up-grid {
+        width: 100%;
+        aspect-ratio: 1/1;
+
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+}
+
+#game-info {
+    p {
+        font-size: 2vmin;
+    }
+}
+
+@keyframes small-grow {
+    0% {
+        transform: scale(1);
+    }
+    10% {
+        transform: scale(.9);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.small-grow {
+    animation: small-grow .25s ease;
+}
+
+@keyframes row-clear {
+    0% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scaleY(1.5);
+        opacity: .5;
+    }
+    100% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+}
+
+.row-clear {
+    animation: row-clear .4s ease;
 }

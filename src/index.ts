@@ -1,23 +1,32 @@
-import '../styles/styles.scss';
+import '../styles/styles.scss'; // include scss in build
+
 import * as Audio from "./WebAA";
-import { Grid } from "./Grid";
-import { PieceData } from "./PieceData"
+
 import {Actor} from "./Actor";
+import {getRandPiece, PieceData, PiecesCount} from "./PieceData"
+import {TetrisGrid} from "./TetrisGrid";
+import {Grid} from "./Grid";
 
 const audio = new Audio.AudioEngine;
 let tetrisEl: HTMLElement;
 let gridEl: HTMLElement;
 let pointsEl: HTMLElement;
+let levelEl: HTMLElement;
+let nextUpGridEl: HTMLElement;
 
 const FIELD_WIDTH = 10;
 const FIELD_HEIGHT = 20;
 
-let grid = new Grid(FIELD_HEIGHT, FIELD_WIDTH);
-const player = new Actor(grid);
-let score: number = 0;
+let grid = new TetrisGrid(FIELD_HEIGHT, FIELD_WIDTH);
+
+let score = 0;
+let level = 1;
 
 let stepSpeed = 33.333; // each step takes this amt of ms
 let isRunning = true;
+
+let nextPiece: Grid = getRandPiece();
+let storedPiece: Grid = null;
 
 function getPosFromId(id: string) {
     const matches = id.match(/(?<=[rc])\d+/g);
@@ -27,10 +36,49 @@ function getPosFromId(id: string) {
     }
 }
 
+const player = new Actor(grid, () => getNextPiece());
+function getNextPiece(): Grid {
+    const sendThis = nextPiece;
+
+    nextPiece = getRandPiece();
+    return sendThis;
+}
+
+
 window.onload = () => {
     tetrisEl = document.getElementById("tetris");
     gridEl = document.getElementById("grid");
     pointsEl = document.getElementById("points");
+    levelEl = document.getElementById("level");
+    nextUpGridEl = document.getElementById("next-up-grid");
+
+    player.onPieceConnect.addListener(actor => {
+       const tiles = actor.getTileEls();
+       console.log(tiles);
+       tiles.forEach(tile => {
+           tile.classList.remove("small-grow");
+           tile.classList.add("small-grow");
+       });
+    });
+
+    player.onLineClear.addListener(lines => {
+        if (lines.length === 4) {
+            score += 800 * level;
+        } else if (lines.length === 3) {
+            score += 400 * level;
+        } else if (lines.length === 2) {
+            score += 200 * level;
+        } else if (lines.length === 1) {
+            score += 100 * level;
+        }
+    });
+
+    tetrisEl.addEventListener("animationend", evt => {
+        const target = evt.target as HTMLElement;
+
+        if (evt.animationName === "small-grow" || evt.animationName === "row-clear")
+            target.classList.remove(evt.animationName);
+    });
 
     for (let row = 0; row < FIELD_HEIGHT; ++row) {
         for (let col = 0; col < FIELD_WIDTH; ++col) {
@@ -39,6 +87,10 @@ window.onload = () => {
             newDiv.id = "r" + row + "c" + col;
             gridEl.appendChild(newDiv);
         }
+    }
+
+    for (let row = 0; row < 4; ++row) {
+        nextUpGridEl.appendChild(document.createElement("div"));
     }
 
     // Test draw blocks
@@ -53,15 +105,21 @@ window.onload = () => {
     document.addEventListener("keydown", evt => {
         evt.preventDefault(); // prevent browser from using keydowns for shortcuts
 
-        if (evt.code === "ArrowLeft") {
-            player.move(0, -1);
-        }
-        if (evt.code === "ArrowRight") {
-            player.move(0, 1);
-        }
-        if (evt.code === "ArrowDown") {
-            player.move(1, 0);
-            player.counter = player.speed; // reset auto-drop counter
+        switch (evt.code) {
+            case "ArrowLeft":
+                player.move(0, -1);
+                break;
+            case "ArrowRight":
+                player.move(0, 1);
+                break;
+            case "ArrowDown":
+                if (player.moveDownOne())
+                    ++score;
+                player.resetCounter();
+
+                break;
+            case "ArrowUp":
+                break;
         }
 
         if (evt.repeat) {
@@ -73,6 +131,9 @@ window.onload = () => {
             if (evt.code === "KeyZ") {
                 player.rotate(player.angle - 1);
             }
+            if (evt.code === "ArrowUp") {
+                player.immediateDrop();
+            }
 
 
 
@@ -81,19 +142,18 @@ window.onload = () => {
 
     });
 
+    grid.onAnimEnd.addListener(animName => {
+        if (animName === "line-clear") {
+            render();
+        }
+    });
+
 
     // first render
     render();
     update();
 
     function update() {
-
-        // for (let row = 0; row < FIELD_HEIGHT; ++row) {
-        //     for (let col = 0; col < FIELD_WIDTH; ++col) {
-        //         grid.set(row, col, Math.floor(Math.random() * 8));
-        //     }
-        // }
-
         player.update(stepSpeed);
 
         render();
@@ -108,7 +168,8 @@ window.onload = () => {
         for (let row = 0; row < FIELD_HEIGHT; ++row) {
             for (let col = 0; col < FIELD_WIDTH; ++col) {
                 const idx = row * FIELD_WIDTH + col;
-                tiles[idx].style.background = PieceData[grid.get(row, col)].color;
+                const gridVal = grid.get(row, col);
+                tiles[idx].style.background = gridVal === PiecesCount + 1 ? "black" : PieceData[gridVal].color;
             }
         }
 
