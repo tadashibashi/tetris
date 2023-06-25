@@ -2,11 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Tetris</title>
 
-        <!-- Stylesheet -->
-        <link rel="stylesheet" href="css/main.css" />
+        <!-- Icon -->
+        <link rel="icon" type="image/png" href="favicon.png">
 
+        <!-- Stylesheet -->
+        <link rel="stylesheet" href="static/css/main.css" />
+
+        <!-- Font Awesome -->
         <script src="https://kit.fontawesome.com/a8d80231ea.js" crossorigin="anonymous"></script>
     </head>
     <body>
@@ -15,16 +20,19 @@
         </header>
 
         <main>
-            <div id="play-again" class="btn"></div>
-
+            <!-- App -->
             <section id="tetris">
+
+                <!-- Left-hand side-panel -->
                 <section id="holding" class="container">
                     <div id="holding-grid" class="piece-grid"></div>
                     <p class="label">Store</p>
                 </section>
-                <!-- Tile square display -->
+
+                <!-- Central grid arena -->
                 <section id="grid"></section>
 
+                <!-- Right-hand side-panel -->
                 <section id="next-up" class="container">
                     <div id="next-up-grid" class="piece-grid"></div>
                     <p class="label">Next Up</p>
@@ -36,32 +44,40 @@
                         <p>Level: <span id="level"></span></p>
                     </section>
 
+                    <!-- Buttons -->
                     <section>
                         <div id="pause-btn" class="soft-square btn"><i class="fa-solid fa-pause"></i></div>
                         <div id="target-btn" class="soft-square btn"><i class="fa-solid fa-expand"></i></div>
                     </section>
-                </section>
 
-            </section>
-            <section id="highscore-form" class="center-overlay">
-                <h2>Congratulations</h2>
-                <p id="highscore-description"></p>
-                <input id="highscore-name" type="text"/>
-                <label for="highscore-name">Name</label>
-                <button id="highscore-submit" class="soft-square btn">Submit</button>
-            </section>
-            <section id="highscore-board" class="center-overlay">
-                <h2>High Scores</h2>
-                <div id="highscore-text"></div>
-            </section>
-            <section id="gameover-overlay" class="center-overlay">
-                <h2>Game Over</h2>
-                <button id="try-again-btn" class="soft-square btn">Try Again?</button>
-            </section>
+                </section> <!-- end Right-hand side panel -->
+
+            </section> <!-- end App -->
         </main>
 
 
+        <!-- Hidden/Shown Overlays: This would be cleaner with React... -->
 
+        <!-- Player name entry form for high score board -->
+        <aside id="highscore-form" class="center-overlay">
+            <h2>Congratulations</h2>
+            <p id="highscore-description"></p>
+            <input id="highscore-name" type="text"/>
+            <label for="highscore-name">Name</label>
+            <button id="highscore-submit" class="soft-square btn">Submit</button>
+        </aside>
+
+        <!-- High Score Board -->
+        <aside id="highscore-board" class="center-overlay">
+            <h2>High Scores</h2>
+            <div id="highscore-text"></div>
+        </aside>
+
+        <!-- Game Over text if player did not make high score -->
+        <aside id="gameover-overlay" class="center-overlay">
+            <h2>Game Over</h2>
+            <button id="try-again-btn" class="soft-square btn">Try Again?</button>
+        </aside>
 
         <script src="main.js"></script>
     </body>

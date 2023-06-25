@@ -1,15 +1,11 @@
 /* ===== Fonts =============================================================== */
 
 @font-face {
-    font-family: "Sabo";
-    src: url('fonts/Sabo-Filled.otf') format("opentype");
-}
-@font-face {
     font-family: "Space Mission";
     src: url('fonts/SpaceMission.otf') format("opentype");
 }
 
-/* ===== Global Macros ====================================================== */
+/* ===== Global Vars ====================================================== */
 
 :root {
     --main-font: "Space Mission", monospace;

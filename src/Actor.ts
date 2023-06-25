@@ -162,7 +162,8 @@ export class Actor {
      * Moves piece down one row in the grid. Returns false if move prevented, and true if moved.
      */
     moveDownOne() {
-        this.move(1, 0);
+        if (this.moveRelRow === 0)
+            this.move(1, 0);
     }
 
     /**

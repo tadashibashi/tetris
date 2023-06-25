@@ -8,9 +8,9 @@
 
 # Build, intermediate files, libraries, etc.
 build/
-dist/main.js
-dist/css/
-dist/*.otf
+dist/*
+!dist/index.html
+!dist/favicon.png
 node_modules/
 
 # yarn

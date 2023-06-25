@@ -24,7 +24,7 @@ const config = {
     plugins: [
         new MiniCssExtractPlugin({
             linkType: "text/css",
-            filename: "css/[name].css",
+            filename: "static/css/[name].css",
             chunkFilename: "[name].css"
         })
     ],
