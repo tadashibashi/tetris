@@ -89,11 +89,13 @@ export class Actor {
         this.row += this.moveRelRow;
         this.col += this.moveRelCol;
 
+        if (this.moveRelRow > 0) {
+            this.underPressure = false;
+            this.pressure = 0;
+        }
+
         // fire move callback here
         this.onMove.invoke(this.moveRelRow, this.moveRelCol);
-
-        if (this.moveRelRow > 0)
-            this.underPressure = false;
 
         // reset movement vars
         this.moveRelRow = 0;
@@ -110,9 +112,11 @@ export class Actor {
         this.applyTransformation();
 
         if (this.underPressure) {
-            this.pressure += dt;
-            if (this.pressure >= this.maxPressure) {
-                this.connectToBoard();
+            if (this.piece.intersects(this.grid, this.row + 1, this.col, this.angle)) {
+                this.pressure += dt;
+                if (this.pressure >= this.maxPressure) {
+                    this.connectToBoard();
+                }
             }
         }
 
