@@ -14,7 +14,7 @@
 :root {
     --main-font: "Space Mission", monospace;
     --sub-font: "Sabo", monospace;
-    --main-background: #e5dff6;
+    --main-background: #cacae3;
     --title-font-size: 8vmin;
 
     --display-font-size: 2vmin;
@@ -43,8 +43,16 @@
 }
 
 body {
-    font-family: var(--main-font);
+
     background: var(--main-background);
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: var(--main-font);
+}
+
+p {
+    font-family: var(--main-font);
 }
 
 h1 {
@@ -63,6 +71,39 @@ p {
     text-align: center;
 }
 
+.circle {
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+}
+
+.soft-square {
+    border-radius: 1vmin;
+}
+
+.btn {
+    user-select: none;
+    border: .1vmin #c2c2c2 solid;
+    display: inline-block;
+    text-align: center;
+    font-size: 3vmin;
+    background: #bbbbbb;
+    width: 5vmin;
+}
+
+#pause-btn {
+    transition: color .5s, background .5s;
+}
+
+.btn:hover {
+    background: #eaeaea;
+    transition: color .1s, background .1s;
+}
+
+.btn:active {
+    background: #9d9d9d;
+    color: white;
+}
+
 #tetris {
     width: 80vmin;
     height: 100vh;
@@ -77,8 +118,18 @@ p {
 }
 
 .container {
-    padding: 1vmin;
+    display: flex;
+    flex-direction: column;
+    height: 21vmin;
+    overflow: visible;
+    padding: 1.5vmin;
+    border: 1px #b7b6b6 solid;
+    border-radius: 1vmin;
+    background: #f1f1f1;
     width: 4vmin;
+    box-shadow: var(--box-shadow);
+
+    row-gap: .5vmin;
 }
 
 #grid {
@@ -140,12 +191,87 @@ p {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
 
-    border: 1px solid gray;
-    border-radius: 2px;
+    border: 1px solid #b0b0b0;
+    background: #e8e5e5;
+    border-radius: 1vmin;
 }
 
 .piece-grid div {
     border: 1px dashed rgba(211, 211, 211, 0.47);
+    transition: .5s background;
+}
+
+.center-overlay {
+    pointer-events: none;
+}
+
+.center-overlay.show {
+    pointer-events: all;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#highscore-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    justify-content: center;
+    background: rgba(225, 225, 225, 0.82);
+
+    opacity: 0;
+    transition: opacity 1s;
+    z-index: 10;
+
+    padding: 2vmin;
+}
+
+#highscore-form.show {
+    opacity: 1;
+}
+
+#highscore-form button {
+    font-family: var(--main-font);
+    font-size: 2vmin;
+}
+
+#highscore-form label {
+    font-family: var(--main-font);
+    font-size: 2vmin;
+    margin-bottom: 2vmin;
+}
+
+#highscore-submit {
+    width: 10vmin;
+}
+
+#score-display p {
+    font-family: monospace;
+}
+
+#gameover-overlay {
+    background: rgba(225, 225, 225, 0.82);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1s;
+    z-index: 10;
+
+    padding: 2vmin;
+}
+
+#gameover-overlay.show {
+    opacity: 1;
+}
+
+#try-again-btn {
+    width: 8vmin;
+    background: white;
+    font-size: 2vmin;
+    font-family: var(--main-font);
 }
 
 

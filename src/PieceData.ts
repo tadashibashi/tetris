@@ -15,7 +15,6 @@ interface PieceDatabase {
 }
 
 const PieceData: PieceDatabase = {
-    "-1": {color: "black", id: -1, piece: null },
     None:  { color: "#ffffff00", id: 0, piece: null },
     Stick: { color: "skyblue", id: 1, piece: new Grid(4, 4,[
             0, 0, 0, 0,

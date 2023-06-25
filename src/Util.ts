@@ -53,3 +53,13 @@ export const detectBrowser = (function() {
         return false;
     }
 })();
+
+/**
+ * Interpolate between n and dest by a given percentage.
+ * @param n      - current number
+ * @param dest   - destination number
+ * @param amount - percentage to interpolate (0.0-1.0)
+ */
+export function lerp(n: number, dest: number, amount: number) {
+    return n + (dest - n) * amount;
+}

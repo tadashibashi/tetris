@@ -10,37 +10,58 @@
         <script src="https://kit.fontawesome.com/a8d80231ea.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <h1>Grid Tetris</h1>
+        <header>
+            <h1>Grid Tetris</h1>
+        </header>
 
-        <section id="pause-overlay"></section>
+        <main>
+            <div id="play-again" class="btn"></div>
 
-        <!-- Main game block -->
-        <section id="tetris">
-            <section id="holding" class="container">
-                <div id="holding-grid" class="piece-grid"></div>
-                <p class="label">Holding</p>
-            </section>
-            <!-- Tile square display -->
-            <section id="grid"></section>
-
-
-            <section id="next-up" class="container">
-                <div id="next-up-grid" class="piece-grid"></div>
-                <p class="label">Next Up</p>
-
-                <section id="score-display">
-                    <p>Score: <span id="points"></span></p>
-                    <p>Level: <span id="level"></span></p>
+            <section id="tetris">
+                <section id="holding" class="container">
+                    <div id="holding-grid" class="piece-grid"></div>
+                    <p class="label">Store</p>
                 </section>
+                <!-- Tile square display -->
+                <section id="grid"></section>
+
+                <section id="next-up" class="container">
+                    <div id="next-up-grid" class="piece-grid"></div>
+                    <p class="label">Next Up</p>
+
+                    <section id="score-display">
+                        <p>High Score: <span id="highscore"></span></p>
+                        <p>Score: <span id="points"></span></p>
+                        <p>Lines: <span id="lines"></span></p>
+                        <p>Level: <span id="level"></span></p>
+                    </section>
+
+                    <section>
+                        <div id="pause-btn" class="soft-square btn"><i class="fa-solid fa-pause"></i></div>
+                        <div id="target-btn" class="soft-square btn"><i class="fa-solid fa-expand"></i></div>
+                    </section>
+                </section>
+
             </section>
+            <section id="highscore-form" class="center-overlay">
+                <h2>Congratulations</h2>
+                <p id="highscore-description"></p>
+                <input id="highscore-name" type="text"/>
+                <label for="highscore-name">Name</label>
+                <button id="highscore-submit" class="soft-square btn">Submit</button>
+            </section>
+            <section id="highscore-board" class="center-overlay">
+                <h2>High Scores</h2>
+                <div id="highscore-text"></div>
+            </section>
+            <section id="gameover-overlay" class="center-overlay">
+                <h2>Game Over</h2>
+                <button id="try-again-btn" class="soft-square btn">Try Again?</button>
+            </section>
+        </main>
 
 
 
-
-
-        </section>
-
-        <div></div>
 
         <script src="main.js"></script>
     </body>

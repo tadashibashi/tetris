@@ -12,6 +12,8 @@ export class Keyboard {
     keys: KeyState[];
     autoMode: boolean;
 
+    allowDefault: boolean;
+
     constructor(...codes: string[]) {
         this.keys = [];
         this.keyMap = new Map;
@@ -20,6 +22,7 @@ export class Keyboard {
             this.add(...codes);
 
         this.autoMode = true;
+        this.allowDefault = false;
 
         this.processKeyup = this.processKeyup.bind(this);
         this.processKeydown = this.processKeydown.bind(this);
@@ -54,7 +57,7 @@ export class Keyboard {
 
     isRepeating(code: string, initDelay: number, interval: number) {
         const key = this.getState(code);
-        if (key.state > initDelay + interval) {
+        if (key.state >= initDelay + interval) {
             key.state -= interval;
             return true;
         } else {
@@ -121,7 +124,9 @@ export class Keyboard {
     }
 
     private processKeydown(evt: KeyboardEvent) {
-        evt.preventDefault();
+        if (!this.allowDefault)
+            evt.preventDefault();
+
         if (evt.repeat) return;
 
         let state = this.keyMap.get(evt.code);
