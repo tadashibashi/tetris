@@ -63,14 +63,17 @@ export class Actor {
         this.moveRelCol = Math.floor(this.moveRelCol); // just in case...
         this.moveRelRow = Math.floor(this.moveRelRow);
 
+        let angle = this.nextAngle === -1 ? this.angle : this.nextAngle;
+
         // check horizontal motion first
         if (this.moveRelCol !== 0) {
             const dir = Math.sign(this.moveRelCol);
             let relCol = this.moveRelCol;
 
             while (relCol !== 0) {
-                if ( (relCol < 0 && this.outboundsLeft(relCol, this.angle)) || (relCol > 0 && this.outboundsRight(relCol, this.angle)) ||
-                    this.piece.intersects(this.grid, this.row, this.col + relCol, this.angle) ) {
+                if ( (relCol < 0 && this.outboundsLeft(this.col + relCol, angle)) ||
+                     (relCol > 0 && this.outboundsRight(this.col + relCol, angle)) ||
+                    this.piece.intersects(this.grid, this.row, this.col + relCol, angle) ) {
                     relCol -= dir;
                 } else {
                     break;
@@ -86,8 +89,8 @@ export class Actor {
 
             while (relRow !== 0) {
                 // check boundaries and
-                if ( (relRow > 0 && this.outboundsDown(relRow, this.angle)) ||
-                    this.piece.intersects(this.grid, this.row + relRow, this.col + this.moveRelCol, this.angle) ) {
+                if ( (relRow > 0 && this.outboundsDown(this.row + relRow, angle)) ||
+                    this.piece.intersects(this.grid, this.row + relRow, this.col + this.moveRelCol, angle) ) {
 
                     // if something is blocking the way downward
                     if (relRow > 0)
@@ -106,12 +109,11 @@ export class Actor {
 
 
         // apply rotation at new position
-        if (this.nextAngle > -1)
-            this.moveRelCol += this.applyAngle(this.moveRelRow, this.moveRelCol);
+        this.moveRelCol += this.applyAngle(this.row + this.moveRelRow, this.col + this.moveRelCol);
 
         // constrict within game board
-        if (this.moveRelRow > 0)
-            this.moveRelRow += this.constrictBoundsRows(this.row + this.moveRelRow, this.angle);
+
+        this.moveRelRow += this.constrictBoundsRows(this.row + this.moveRelRow, this.angle);
 
         this.moveRelCol += this.constrictBoundsCols(this.col + this.moveRelCol, this.angle,
             this.moveRelCol < 0, this.moveRelCol > 0);
@@ -120,10 +122,11 @@ export class Actor {
         this.row += this.moveRelRow;
         this.col += this.moveRelCol;
 
-        // if (this.moveRelRow > 0) {
-        //     this.underPressure = false;
-        //     this.pressure = 0;
-        // }
+        if (!this.piece.intersects(this.grid, this.row + 1, this.col, this.angle) &&
+            !this.outboundsDown(this.row + 1, this.angle)) {
+            this.underPressure = false;
+            this.pressure = 0;
+        }
 
         // fire move callback here
         this.onMove.invoke(this.moveRelRow, this.moveRelCol);
@@ -280,16 +283,16 @@ export class Actor {
     }
 
 
-    private outboundsLeft(colRel: number  = 0, angle: number = 0): boolean {
-        return this.col + colRel < -this.piece.leftMost(angle);
+    private outboundsLeft(col: number  = 0, angle: number = 0): boolean {
+        return col < -this.piece.leftMost(angle);
     }
 
-    private outboundsRight(colRel: number = 0, angle: number = 0): boolean {
-        return this.col + colRel > this.grid.getWidth() - 1 - this.piece.rightMost(angle);
+    private outboundsRight(col: number = 0, angle: number = 0): boolean {
+        return col > this.grid.getWidth() - 1 - this.piece.rightMost(angle);
     }
 
-    private outboundsDown(rowRel: number = 0, angle: number = 0): boolean {
-        return this.row + rowRel > this.grid.getHeight() - 1 - this.piece.bottomMost(angle);
+    private outboundsDown(row: number = 0, angle: number = 0): boolean {
+        return row > this.grid.getHeight() - 1 - this.piece.bottomMost(angle);
     }
 
     private outboundsTop(rowRel: number = 0, angle: number = 0): boolean {
@@ -330,40 +333,42 @@ export class Actor {
 
     /**
      *
-     * @param relRow
-     * @param relCol
+     * @param atRow
+     * @param atCol
      * @private
      * @returns the relative horizontal motion caused by the application of the angle
      */
-    private applyAngle(relRow: number, relCol: number) {
-        let col = this.col + relCol;
-        let row = this.row + relRow;
+    private applyAngle(atRow: number, atCol: number) {
+        if (this.nextAngle === -1) return 0;
+
         let angle = this.nextAngle;
 
-        if (!this.piece.intersects(this.grid, row, col, angle, 0) &&
-            !this.outboundsLeft(relCol, angle) &&
-            !this.outboundsRight(relCol, angle) &&
-            !this.outboundsDown(relRow, angle)) {
+        if (!this.piece.intersects(this.grid, atRow, atCol, angle, 0) &&
+            !this.outboundsLeft(atCol, angle) &&
+            !this.outboundsRight(atCol, angle) &&
+            !this.outboundsDown(atRow, angle)) {
             this.angle = angle;
             return 0;
         }
 
         for (let i = 1; i < 3; ++i) {
-            if (!this.piece.intersects(this.grid, row, col + i, angle, 0) &&
-                !this.outboundsLeft(relCol + i, angle) &&
-                !this.outboundsRight(relCol + i, angle) &&
-                !this.outboundsDown(relRow + i, angle)) {
+            if (!this.piece.intersects(this.grid, atRow, atCol + i, angle, 0) &&
+                !this.outboundsLeft(atCol + i, angle) &&
+                !this.outboundsRight(atCol + i, angle) &&
+                !this.outboundsDown(atRow + i, angle)) {
                 this.angle = angle;
                 return i;
             }
-            if (!this.piece.intersects(this.grid, row, col - i, angle, 0) &&
-                !this.outboundsLeft(relCol-i, angle) &&
-                !this.outboundsRight(relCol-i, angle) &&
-                !this.outboundsDown(relRow-i, angle)) {
+            if (!this.piece.intersects(this.grid, atRow, atCol - i, angle, 0) &&
+                !this.outboundsLeft(atCol-i, angle) &&
+                !this.outboundsRight(atCol-i, angle) &&
+                !this.outboundsDown(atRow-i, angle)) {
                 this.angle = angle;
                 return -i;
             }
         }
+
+        return 0;
     }
 
     rotate(angle: number) {
@@ -388,7 +393,8 @@ export class Actor {
         let shadowRow = 0;
         if (this.displayShadow) {
             shadowRow = 1;
-            while (!this.piece.intersects(this.grid, this.row + shadowRow, this.col, this.angle) && !this.outboundsDown(shadowRow, this.angle))
+            while (!this.piece.intersects(this.grid, this.row + shadowRow, this.col, this.angle) &&
+                !this.outboundsDown(this.row + shadowRow, this.angle))
                 ++shadowRow;
             --shadowRow;
         }
@@ -417,10 +423,15 @@ export class Actor {
 
                     const tileIdx = (row + this.row) * this.grid.colCount + col + this.col;
                     const tile = tiles[tileIdx];
-                    tile.style.background = PieceData[pieceIdx].color;
-                    tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)";
-                    tile.style.opacity = "1";
-                    tile.style.border = "";
+                    if (!tile) {
+                        console.warn("tile missing!");
+                    } else {
+                        tile.style.background = PieceData[pieceIdx].color;
+                        tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)";
+                        tile.style.opacity = "1";
+                        tile.style.border = "";
+                    }
+
                 }
             }
         }
