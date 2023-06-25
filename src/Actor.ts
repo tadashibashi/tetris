@@ -60,17 +60,48 @@ export class Actor {
     }
 
     applyTransformation() {
-        // check horizontal motion first
-        if (this.moveRelCol !== 0 && this.piece.intersects(this.grid, this.row, this.col + this.moveRelCol, this.angle, 0))
-            this.moveRelCol = 0;
+        this.moveRelCol = Math.floor(this.moveRelCol); // just in case...
+        this.moveRelRow = Math.floor(this.moveRelRow);
 
-        // check vertical motion
-        if (this.moveRelRow !== 0 && this.piece.intersects(this.grid, this.row + this.moveRelRow, this.col, this.angle, 0) ||
-            this.row + this.moveRelRow > this.grid.getHeight() - 1 - this.piece.bottomMost(this.angle)) {
-            if (this.moveRelRow > 0) {  // cannot move downward, apply pressure state
-                this.underPressure = true;
+        // check horizontal motion first
+        if (this.moveRelCol !== 0) {
+            const dir = Math.sign(this.moveRelCol);
+            let relCol = this.moveRelCol;
+
+            while (relCol !== 0) {
+                if ( (relCol < 0 && this.outboundsLeft(relCol, this.angle)) || (relCol > 0 && this.outboundsRight(relCol, this.angle)) ||
+                    this.piece.intersects(this.grid, this.row, this.col + relCol, this.angle) ) {
+                    relCol -= dir;
+                } else {
+                    break;
+                }
             }
-            this.moveRelRow = 0;
+
+            this.moveRelCol = relCol;
+        }
+
+        if (this.moveRelRow !== 0) {
+            const dir = Math.sign(this.moveRelRow);
+            let relRow = this.moveRelRow;
+
+            while (relRow !== 0) {
+                // check boundaries and
+                if ( (relRow > 0 && this.outboundsDown(relRow, this.angle)) ||
+                    this.piece.intersects(this.grid, this.row + relRow, this.col + this.moveRelCol, this.angle) ) {
+
+                    // if something is blocking the way downward
+                    if (relRow > 0)
+                        this.underPressure = true;
+
+                    relRow -= dir;
+
+
+                } else {
+                    break;
+                }
+            }
+
+            this.moveRelRow = relRow;
         }
 
 
@@ -89,10 +120,10 @@ export class Actor {
         this.row += this.moveRelRow;
         this.col += this.moveRelCol;
 
-        if (this.moveRelRow > 0) {
-            this.underPressure = false;
-            this.pressure = 0;
-        }
+        // if (this.moveRelRow > 0) {
+        //     this.underPressure = false;
+        //     this.pressure = 0;
+        // }
 
         // fire move callback here
         this.onMove.invoke(this.moveRelRow, this.moveRelCol);
@@ -112,11 +143,9 @@ export class Actor {
         this.applyTransformation();
 
         if (this.underPressure) {
-            if (this.piece.intersects(this.grid, this.row + 1, this.col, this.angle)) {
-                this.pressure += dt;
-                if (this.pressure >= this.maxPressure) {
-                    this.connectToBoard();
-                }
+            this.pressure += dt;
+            if (this.pressure >= this.maxPressure) {
+                this.connectToBoard();
             }
         }
 
@@ -312,25 +341,25 @@ export class Actor {
         let angle = this.nextAngle;
 
         if (!this.piece.intersects(this.grid, row, col, angle, 0) &&
-            !this.outboundsLeft(0, angle) &&
-            !this.outboundsRight(0, angle) &&
-            !this.outboundsDown(0, angle)) {
+            !this.outboundsLeft(relCol, angle) &&
+            !this.outboundsRight(relCol, angle) &&
+            !this.outboundsDown(relRow, angle)) {
             this.angle = angle;
             return 0;
         }
 
         for (let i = 1; i < 3; ++i) {
             if (!this.piece.intersects(this.grid, row, col + i, angle, 0) &&
-                !this.outboundsLeft(i, angle) &&
-                !this.outboundsRight(i, angle) &&
-                !this.outboundsDown(i, angle)) {
+                !this.outboundsLeft(relCol + i, angle) &&
+                !this.outboundsRight(relCol + i, angle) &&
+                !this.outboundsDown(relRow + i, angle)) {
                 this.angle = angle;
                 return i;
             }
             if (!this.piece.intersects(this.grid, row, col - i, angle, 0) &&
-                !this.outboundsLeft(-i, angle) &&
-                !this.outboundsRight(-i, angle) &&
-                !this.outboundsDown(-i, angle)) {
+                !this.outboundsLeft(relCol-i, angle) &&
+                !this.outboundsRight(relCol-i, angle) &&
+                !this.outboundsDown(relRow-i, angle)) {
                 this.angle = angle;
                 return -i;
             }
@@ -391,6 +420,7 @@ export class Actor {
                     tile.style.background = PieceData[pieceIdx].color;
                     tile.style.boxShadow = "-.5vmin 1vmin .5vmin .5vmin rgba(0, 0, 0, 0.1)";
                     tile.style.opacity = "1";
+                    tile.style.border = "";
                 }
             }
         }
