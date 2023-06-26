@@ -35,8 +35,8 @@ export class Tetris extends Game {
     grid: TetrisGrid;
 
     nextPiece: Grid;
-    storedPiece: Grid = null;
-    lastSwapped: Grid = null;
+    storedPiece: Grid;
+    lastSwapped: Grid;
     totalLines = 0;
     scores: HighScoreBoard;
 
@@ -44,7 +44,6 @@ export class Tetris extends Game {
     level: number;
 
     isPaused: boolean;
-
     gameOver: boolean; // TODO: use state var
 
     // Player pressed arrow down, check for score
@@ -260,15 +259,23 @@ export class Tetris extends Game {
     }
 
     reset() {
+        // Reset owned objects
         this.player.restart();
+        this.grid.reset();
+        this.keyboard.allowDefault = false;
+
+        // Reset state
         this.score = 0;
         this.level = 1;
         this.totalLines = 0;
-        this.grid.reset();
+
+        this.storedPiece = null;
+        this.lastSwapped = null;
+
+        // Reset state flags
         this.gameOver = false;
         this.isPaused = false;
         this.arrowDownCheck = false;
-        this.keyboard.allowDefault = false;
         this.render();
     }
 
@@ -283,6 +290,7 @@ export class Tetris extends Game {
             targetBtnEl.click();
         }
 
+        // Menu progression after a game over
         if (this.gameOver) {
             if (keys.justDown("Enter")) {
                 if (highscoreFormEl.classList.contains("show")) {
