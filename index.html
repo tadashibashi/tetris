@@ -15,6 +15,7 @@
         <script src="https://kit.fontawesome.com/a8d80231ea.js" crossorigin="anonymous"></script>
     </head>
     <body>
+        <div id="background"></div>
         <header>
             <h1>Grid Tetris</h1>
         </header>
@@ -38,8 +39,10 @@
                     <p class="label">Next Up</p>
 
                     <section id="score-display">
-                        <p>High Score: <span id="highscore"></span></p>
-                        <p>Score: <span id="points"></span></p>
+                        <p><strong>High Score</strong></p>
+                        <p id="highscore"></p>
+                        <p>Score</p>
+                        <p id="points"></p>
                         <p>Lines: <span id="lines"></span></p>
                         <p>Level: <span id="level"></span></p>
                     </section>
@@ -56,7 +59,7 @@
         </main>
 
 
-        <!-- Hidden/Shown Overlays: This would be cleaner with React... -->
+        <!-- Hidden/Shown Overlays: This would be cleaner with a front-end library... -->
 
         <!-- Player name entry form for high score board -->
         <aside id="highscore-form" class="center-overlay">
