@@ -19,8 +19,8 @@
     --tile-border-light: rgba(255, 255, 255, 0.25);
     --tile-border-dark: rgba(101, 101, 101, 0.28);
 
-    --shadow-color: rgba(0, 0, 0, .1);
-    --shadow-color-light: rgba(0, 0, 0, .05);
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --shadow-color-light: rgba(0, 0, 0, 0.06);
     --box-shadow: -1vmin 1vmin 1vmin 1vmin var(--shadow-color);
     --text-shadow: -2vmin 2vmin var(--shadow-color-light);
 
@@ -38,9 +38,35 @@
     box-sizing: border-box;
 }
 
-body {
+html {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
 
-    background: var(--main-background);
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+#background {
+
+    background: url(images/background.jpeg) no-repeat center;
+    background-color: rgba(120, 121, 126, 0.63);
+    background-size: cover;
+    background-blend-mode: multiply;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    filter: blur(1px) grayscale(30%);
+
+    z-index: -1;
 }
 
 h1, h2, h3, h4, h5 {
@@ -49,6 +75,8 @@ h1, h2, h3, h4, h5 {
 
 p {
     font-family: var(--main-font);
+    font-size: 3vmin;
+    text-align: left;
 }
 
 h1 {
@@ -58,13 +86,10 @@ h1 {
     text-shadow: var(--text-shadow)
 }
 
-p {
-    font-size: 3vmin;
-    text-align: left;
-}
-
-.label {
+.container .label {
+    margin-top: .5vmin;
     text-align: center;
+    font-size: 2.75vmin;
 }
 
 .circle {
@@ -113,28 +138,18 @@ p {
     row-gap: 4vmin;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 21vmin;
-    overflow: visible;
-    padding: 1.5vmin;
-    border: 1px #b7b6b6 solid;
-    border-radius: 1vmin;
-    background: #f1f1f1;
-    width: 4vmin;
-    box-shadow: var(--box-shadow);
-
-    row-gap: .5vmin;
+:root {
+    --grid-bg-color1: #d5d5d5;
+    --grid-bg-color2: #cecece;
 }
 
 #grid {
     background: repeating-linear-gradient(
         45deg,
-        #fefefe,
-        #fefefe 2px,
-        #eee 2px,
-        #eee 4px
+        var(--grid-bg-color1),
+        var(--grid-bg-color1) 2px,
+        var(--grid-bg-color2) 2px,
+        var(--grid-bg-color2) 4px
     );
     grid-area: board;
     margin: 0 auto;
@@ -168,11 +183,49 @@ p {
 #holding {
     grid-area: held;
     width: 100%;
+    height: 23vmin;
 }
 
 #next-up {
     grid-area: next-up;
     width: 100%;
+    height: 50vmin;
+}
+
+
+#score-display {
+    margin-top: -2vmin;
+}
+
+#score-display > p:first-of-type {
+    text-align: center;
+    font-size: 2vmin;
+}
+
+#score-display > p {
+    font-size: 1.75vmin;
+}
+
+#points {
+    margin-top: -1vmin;
+}
+
+#highscore {
+    text-align: center;
+    margin-top: -1.5vmin;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    padding: 1.5vmin;
+    border: 1px #b7b6b6 solid;
+    border-radius: 1vmin;
+    background: var(--grid-bg-color1);
+    width: 4vmin;
+    box-shadow: var(--box-shadow);
+    row-gap: .5vmin;
 }
 
 .container p {
@@ -188,7 +241,7 @@ p {
     grid-template-rows: repeat(5, 1fr);
 
     border: 1px solid #b0b0b0;
-    background: #e8e5e5;
+    background: #cecdcd;
     border-radius: 1vmin;
 }
 
@@ -207,6 +260,8 @@ p {
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
+    box-shadow: var(--box-shadow);
+    border-radius: .5vmin;
 }
 
 #highscore-form {
@@ -234,7 +289,7 @@ p {
 }
 
 #highscore-form label {
-    font-family: var(--main-font);
+    font-family: monospace;
     font-size: 2vmin;
     margin-bottom: 2vmin;
 }
@@ -248,7 +303,7 @@ p {
 }
 
 #gameover-overlay {
-    background: rgba(225, 225, 225, 0.82);
+    background: rgba(225, 225, 225, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
