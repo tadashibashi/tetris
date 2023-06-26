@@ -145,15 +145,16 @@ export class Tetris extends Game {
             this.scores.insertScore(this.score, input.value, idx);
             this.scores.save();
             highscoreFormEl.classList.remove("show");
-            this.reset();
-            console.log(this.scores.data); // TODO: Display high scores!
+
+            this.scores.show();
         });
 
         tryAgainBtnEl.addEventListener("click", evt => {
             if (!this.gameOver) return;
             if (!gameOverOverlayEl.classList.contains("show")) return;
 
-            gameOverOverlayEl.classList.remove("show");
+            // gameOverOverlayEl.classList.remove("show");
+            this.scores.hide(); // does this ^
             this.reset();
         });
 
@@ -220,7 +221,7 @@ export class Tetris extends Game {
                     this.keyboard.allowDefault = true;
                     highscoreFormEl.classList.add("show");
                 } else {
-                    gameOverOverlayEl.classList.add("show");
+                    this.scores.show();
                     this.keyboard.allowDefault = true;
                 }
 
@@ -283,7 +284,7 @@ export class Tetris extends Game {
         }
 
         if (this.gameOver) {
-            if (keys.justDown("KeyEnter")) {
+            if (keys.justDown("Enter")) {
                 if (highscoreFormEl.classList.contains("show")) {
                     highscoreSubmitEl.click();
                 }

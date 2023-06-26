@@ -36,6 +36,7 @@
 /* ===== Styles ============================================================ */
 * {
     box-sizing: border-box;
+    user-select: none;
 }
 
 html {
@@ -304,14 +305,28 @@ h1 {
 
 #gameover-overlay {
     background: rgba(225, 225, 225, 0.9);
+
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    width: 50vmin;
+    padding: 2vmin;
+
+    margin-top: 10vmin;
+
     opacity: 0;
     transition: opacity 1s;
-    z-index: 10;
 
-    padding: 2vmin;
+    z-index: 10;
+}
+
+#gameover-overlay > h2 {
+    font-size: 6vmin;
+}
+
+#highscore-text {
+    width: 75%;
 }
 
 #gameover-overlay.show {
@@ -323,6 +338,10 @@ h1 {
     background: white;
     font-size: 2vmin;
     font-family: var(--main-font);
+}
+
+.highscore-score {
+    float: right;
 }
 
 

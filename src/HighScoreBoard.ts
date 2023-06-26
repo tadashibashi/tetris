@@ -58,6 +58,28 @@ export class HighScoreBoard {
         return this.data.length === 0 ? 0 : this.data[this.data.length-1].score;
     }
 
+    show() {
+        const overlayEl = document.getElementById("gameover-overlay");
+        const displayEl = document.getElementById("highscore-text");
+        overlayEl.classList.add("show");
+        let str = "";
+        for (let i = this.data.length-1; i >= 0; --i) {
+            str +=
+            `
+            <p><span>${this.data.length - i} .</span> ${this.data[i].name} <span class="highscore-score">${this.data[i].score}</span></p>
+            `
+        }
+
+        displayEl.innerHTML = str;
+    }
+
+    hide() {
+        const displayEl = document.getElementById("gameover-overlay");
+        displayEl.classList.remove("show");
+    }
+
+
+
     private sort() {
         // sort from low to high
         this.data.sort((a, b) => a.score - b.score);
