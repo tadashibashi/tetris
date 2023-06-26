@@ -1,29 +1,49 @@
 # 🕹️ Grid Tetris
-![Tetris Wireframe](tetris-wireframe.png)
-A Tetris clone using CSS-Grid to render graphics.
+![Current Wireframe](tetris-wireframe-2.png)
+A Tetris clone using pure CSS3 to render graphics.
 
-## Goals
+Play a live build <a href="https://code.aaronishibashi.com/tetris/" target="_blank">here</a>!
 
+### Tools
+
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+
+![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)
+![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+
+
+## Installation
+
+To build and run the project in a local server:
+
+```shell
+npm install
+npm run serve
+``` 
+or
+```shell
+yarn install
+yarn serve
+```
+
+### Why
+
+I made this project with some goals in mind:
 - Learn how to apply transformations and detect collisions on a grid
-- Try to understand performance limitations of the DOM
-- Learn Sass and incorporate it into a project
+- Use event polling in a DOM setting
+- Learn performance limitations of the DOM
+- Use Yarn package manager
 
-## MVP
+![Tetris Wireframe](tetris-wireframe.png)
 
-- Game pieces
-  - Fall from the sky
-  - Rotation
-    - Can rotate in 90 degree increments.
-    - Push piece horizontally if rotation causes collision.
-    - Cancel a colliding rotation if it cannot be pushed without collision.
-  - Piece landing
-    - If row is completed horizontally: add score, push preceding lines down one row
-    - If piece has any part outside the top of the grid -> game over
+*Wireframe Draft*
 
 ## Stretch Goal
 
-- Show next piece
-- Pieces progressively fall at a faster rate
-- Detect double, triple, quadruple row clears
-- Up button will immediately drop piece to its furthest downward position
-- Audio (SFX, Music)
+- [x] Pieces are immediately drop-able
+- [x] Show next piece
+- [x] Pieces progressively fall at a faster rate
+- [ ] Detect & display double, triple, quadruple row clears
+- [ ] Audio (SFX, Music)
