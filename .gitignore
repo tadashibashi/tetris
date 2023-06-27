@@ -8,7 +8,7 @@
 
 # Build, intermediate files, libraries, etc.
 build/
-#dist/*
+dist/*
 !dist/index.html
 !dist/favicon.png
 node_modules/
