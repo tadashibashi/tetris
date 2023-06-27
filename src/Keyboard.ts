@@ -8,12 +8,24 @@ export interface KeyState {
 }
 
 export class Keyboard {
-    keyMap: Map<string, KeyState>;
-    keys: KeyState[];
+    // map of key states, do not handle directly
+    private keyMap: Map<string, KeyState>;
+
+    // list of key states, do not handle directly
+    private keys: KeyState[];
+
+    // Controls whether to add KeyStates automatically when received
+    // Default: true
     autoMode: boolean;
 
+    // Controls whether keydown event listener will allow default key behavior.
+    // Default: false, blocks default
     allowDefault: boolean;
 
+
+    /**
+     * @param codes - any key codes to set the Keyboard with
+     */
     constructor(...codes: string[]) {
         this.keys = [];
         this.keyMap = new Map;
@@ -31,6 +43,9 @@ export class Keyboard {
         document.addEventListener("keyup", this.processKeyup);
     }
 
+    /**
+     * Call during cleaning up. Removes event listeners from the DOM.
+     */
     close() {
         document.removeEventListener("keydown", this.processKeydown);
         document.removeEventListener("keyup", this.processKeyup);
@@ -44,6 +59,10 @@ export class Keyboard {
         });
     }
 
+    /**
+     * Checks if key is down
+     * @param code
+     */
     isDown(code: string) {
         return this.getState(code).state > 0;
     }
@@ -96,6 +115,10 @@ export class Keyboard {
     }
 
 
+    /**
+     * Add KeyState objects to the Keyboard
+     * @param codes - list of codes for each KeyState to add
+     */
     add(...codes: string[]) {
         codes.forEach(code => {
             if (this.keyMap.has(code)) return;
@@ -111,6 +134,10 @@ export class Keyboard {
         });
     }
 
+    /**
+     * Remove KeyState objects from Keyboard
+     * @param codes - list of codes of KeyStates to remove
+     */
     remove(...codes: string[]) {
         codes.forEach(code => {
             const keyState = this.keyMap.get(code);

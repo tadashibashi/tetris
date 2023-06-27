@@ -1,10 +1,24 @@
-# 🕹️ Grid Tetris
+# Grid Tetris
 
 ![Current Wireframe](tetris-wireframe-2.png)
 
 A Tetris clone using pure CSS3 to render graphics.
 
 Play a live build <a href="https://code.aaronishibashi.com/tetris/" target="_blank">here</a>!
+
+## 🕹️ Controls
+| Action            | Key                         |
+|-------------------|-----------------------------|
+| Move Horizontally | `Left` & `Right` Arrow Keys |
+| Move Down         | `Down` Arrow Key            |
+| Immediate Drop    | `Up` Arrow Key              |
+| Rotate Block      | `Z` or `X`                  | 
+
+| Options        | Key                        |
+|----------------|----------------------------|
+| Toggle Pause   | `P` or click Pause Button  |
+| Toggle Target  | `T` or click Target Button |
+
 
 ## Technologies Used
 
