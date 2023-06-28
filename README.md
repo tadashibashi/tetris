@@ -2,7 +2,7 @@
 
 ![Current Wireframe](tetris-wireframe-2.png)
 
-A Tetris clone using pure CSS3 to render graphics.
+A Tetris clone using CSS3 to render graphics.
 
 Play a live build <a href="https://code.aaronishibashi.com/tetris/" target="_blank">here</a>!
 
